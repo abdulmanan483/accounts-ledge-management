@@ -32,8 +32,8 @@
             <div class="row">
                 <div class="col-lg-4 col-xlg-3 col-md-5">
                     <center class="m-t-30">
-                        <img src="{{ $audit->user->image }}" class="img-circle" width="150" />
-                        <h4 class="card-title m-t-10">{{ $audit->user->name }}</h4>
+                        <img src="{{ $audit->user?->image }}" class="img-circle" width="150" />
+                        <h4 class="card-title m-t-10">{{ $audit->user?->name }}</h4>
                     </center>
                 </div>
                 <div class="col-lg-8 col-xlg-9 col-md-7">
@@ -56,7 +56,7 @@
                                         <td class="card-title">Model</td>
                                         <td>{{ $audit->auditable_type }}</td>
                                     </tr>
-                                   
+
                                     <tr>
                                         <td class="card-title">Auditable ID</td>
                                         <td>{{ $audit->auditable_id }}</td>

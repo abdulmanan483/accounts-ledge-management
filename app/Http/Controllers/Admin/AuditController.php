@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use OwenIt\Auditing\Models\Audit;
 
-class AuditController extends Controller implements HasMiddleware
+class AuditController extends Controller
 {
     /**
      * Display a listing of the resource.
