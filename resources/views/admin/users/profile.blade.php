@@ -19,55 +19,54 @@
             <h5 class="mb-0">{{ __('Edit Profile') }}</h5>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('users.profileUpdate') }}" class="validate" role="form" enctype="multipart/form-data">
+            {{ html()->form('POST', route('users.profileUpdate'))->attribute('class', 'validate')->attribute('role', 'form')->attribute('enctype', 'multipart/form-data')->open() }}
                 @csrf
-                <input type="hidden" name="id" value="{{ Auth::user()->id }}">
+                {{ html()->hidden('id', Auth::user()->id) }}
                 <div class="row">
                     <div class="col-8">
                         <div class="row">
                             <div class="form-group col-lg-6 mb-3">
-                                {{ Form::label('name') }}
-                                {{ Form::text('name', Auth::user()->name, ['class' => 'form-control' . ($errors->has('name') ? ' is-invalid' : ''), 'placeholder' => 'Name','required']) }}
+                                {{ html()->label('Name')->for('name') }}
+                                {{ html()->text('name', Auth::user()->name)->class('form-control' . ($errors->has('name') ? ' is-invalid' : ''))->placeholder('Name')->required() }}
                                 {!! $errors->first('name', '<div class="invalid-feedback">:message</div>') !!}
                             </div>
                             <div class="form-group col-lg-6 mb-3">
-                                {{ Form::label('email') }}
-                                {{ Form::text('email', Auth::user()->email, ['class' => 'form-control' . ($errors->has('email') ? ' is-invalid' : ''), 'placeholder' => 'Email','required']) }}
+                                {{ html()->label('Email')->for('email') }}
+                                {{ html()->email('email', Auth::user()->email)->class('form-control' . ($errors->has('email') ? ' is-invalid' : ''))->placeholder('Email')->required() }}
                                 {!! $errors->first('email', '<div class="invalid-feedback">:message</div>') !!}
                             </div>
                             <div class="form-group col-lg-6 mb-3">
-                                {{ Form::label('Old password') }}
-                                {{ Form::password('old_password',  ['class' => 'form-control' . ($errors->has('old_password') ? ' is-invalid' : ''), 'placeholder' => 'Old Password','id' => 'old_password']) }}
+                                {{ html()->label('Old password')->for('old_password') }}
+                                {{ html()->password('old_password')->class('form-control' . ($errors->has('old_password') ? ' is-invalid' : ''))->placeholder('Old Password')->id('old_password') }}
                                 {!! $errors->first('old_password', '<div class="invalid-feedback">:message</div>') !!}
                             </div>
                             <div class="form-group col-lg-6 mb-3">
-                                {{ Form::label('New password') }}
-                                {{ Form::password('new_password', ['class' => 'form-control' . ($errors->has('new_password') ? ' is-invalid' : ''), 'placeholder' => 'New Password','id'=>'new_password']) }}
+                                {{ html()->label('New password')->for('new_password') }}
+                                {{ html()->password('new_password')->class('form-control' . ($errors->has('new_password') ? ' is-invalid' : ''))->placeholder('New Password')->id('new_password') }}
                                 {!! $errors->first('new_password', '<div class="invalid-feedback">:message</div>') !!}
                             </div>
                             <div class="form-group col-lg-6 mb-3">
-                                {{ Form::label('Confirm password') }}
-                                {{ Form::password('confirm_password', ['class' => 'form-control' . ($errors->has('confirm_password') ? ' is-invalid' : ''), 'placeholder' => 'Confirm Password']) }}
+                                {{ html()->label('Confirm password')->for('confirm_password') }}
+                                {{ html()->password('confirm_password')->class('form-control' . ($errors->has('confirm_password') ? ' is-invalid' : ''))->placeholder('Confirm Password') }}
                                 {!! $errors->first('confirm_password', '<div class="invalid-feedback">:message</div>') !!}
                             </div>
                         </div>
                     </div>
                     <div class="col-4 form-group">
-                        {{ Form::label('image') }}
-                        {{ Form::file('image', ['class' => 'form-control dropify' . ($errors->has('image') ? ' is-invalid' : ''), 'accept' => 'image/png,image/jpg,image/jpeg','data-default-file' => auth()->user()->image,'data-height' => '200']) }}
+                        {{ html()->label('Image')->for('image') }}
+                        {{ html()->file('image')->class('form-control dropify' . ($errors->has('image') ? ' is-invalid' : ''))->attribute('accept', 'image/png,image/jpg,image/jpeg')->attribute('data-default-file', auth()->user()->image)->attribute('data-height', '200') }}
                         {!! $errors->first('image', '<div class="invalid-feedback">:message</div>') !!}
                     </div>
                     <div class="col-md-12 d-flex justify-content-end align-items-center mt-3">
-                        <button type="submit" class="btn btn-primary ms-3">
-                            Submit <i class="ph-paper-plane-tilt ms-2"></i>
-                        </button>
+                        {{ html()->button('Submit')->class('btn btn-primary ms-3')->attribute('type', 'submit')->attribute('onclick', 'this.form.submit()') }}
                     </div>
                 </div>
-            </form>
+            {{ html()->form()->close() }}
         </div>
     </div>
 </div>
 @endsection
+
 
 @section('script')
 <script>
@@ -110,9 +109,9 @@
                     required: function(){if (oldpassword.val().length != 0) {return true}else{return false}},
                     minlength:8,
                     maxlength:15
-                },    
+                },
                 confirm_password:{
-                    required: function(){if (password.val().length != 0) {return true}else{return false}}, 
+                    required: function(){if (password.val().length != 0) {return true}else{return false}},
                     equalTo: "#new_password"
                 },
                 email:{

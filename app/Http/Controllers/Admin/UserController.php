@@ -178,7 +178,7 @@ class UserController extends Controller
      */
     public function profileUpdate(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'name'             => 'required',
             'email'            => 'required|email|unique:users,email,' . auth()->user()->id,
             'old_password'     => 'nullable|required_with:new_password',

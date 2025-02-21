@@ -5,6 +5,7 @@ use App\Models\Setting;
 use Spatie\Image\Image;
 use Spatie\Image\Manipulations;
 use Illuminate\Support\Facades\Cache;
+use Spatie\Image\Enums\Fit;
 
 /**
  * Get listing of a resource.
@@ -21,7 +22,7 @@ function uploadFile($file, $path, $width = null, $height = null)
     $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp'];
     if (in_array(strtolower($extension), $imageExtensions)) {
         if ($width && $height) {
-            Image::load($finalPath)->fit(Manipulations::FIT_CROP, $width, $height)->save(public_path($finalPath));
+            Image::load($finalPath)->fit(Fit::Contain , $width, $height)->save(public_path($finalPath));
         }
     }
     return $finalPath;
