@@ -17,18 +17,18 @@ class SettingController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // function __construct()
-    // {
-    //     $this->middleware('permission:settings-list',   ['only' => ['index']]);
-    //     $this->middleware('permission:settings-save',   ['only' => ['save']]);
-    // }
-    public static function middleware(): array
-{
-    return [
-        new Middleware('permission:settings-list', only: ['index']),
-        new Middleware('permission:settings-save', only: ['save']),
-    ];
-}
+    function __construct()
+    {
+        $this->middleware('permission:settings-list',   ['only' => ['index']]);
+        $this->middleware('permission:settings-save',   ['only' => ['save']]);
+    }
+//     public static function middleware(): array
+// {
+//     return [
+//         new Middleware('permission:settings-list', only: ['index']),
+//         new Middleware('permission:settings-save', only: ['save']),
+//     ];
+// }
 
     /**
      * Display a listing of the resource.
@@ -75,7 +75,6 @@ class SettingController extends Controller
                 $data[] = ['key' => $key,'value' => $filenametostore];
             }
         }
-
         Setting::set($data);
         Artisan::call('optimize:clear');
         return redirect()->back()->with('success', 'Setting updated successfully.');

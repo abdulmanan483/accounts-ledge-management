@@ -13,24 +13,24 @@ class AuditController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // function __construct()
-    // {
-    //     $this->middleware('permission:audits-list',  ['only' => ['index']]);
-    //     $this->middleware('permission:audits-view',  ['only' => ['show']]);
-    //     $this->middleware('permission:audits-create',['only' => ['create','store']]);
-    //     $this->middleware('permission:audits-edit',  ['only' => ['edit','update']]);
-    //     $this->middleware('permission:audits-delete',['only' => ['destroy']]);
-    // }
-    public static function middleware(): array
+    function __construct()
     {
-        return [
-            new Middleware('permission:audits-list', only: ['index']),
-            new Middleware('permission:audits-view', only: ['show']),
-            new Middleware('permission:audits-create', only: ['create', 'store']),
-            new Middleware('permission:audits-edit', only: ['edit', 'update']),
-            new Middleware('permission:audits-delete', only: ['destroy']),
-        ];
+        $this->middleware('permission:audits-list',  ['only' => ['index']]);
+        $this->middleware('permission:audits-view',  ['only' => ['show']]);
+        $this->middleware('permission:audits-create',['only' => ['create','store']]);
+        $this->middleware('permission:audits-edit',  ['only' => ['edit','update']]);
+        $this->middleware('permission:audits-delete',['only' => ['destroy']]);
     }
+    // public static function middleware(): array
+    // {
+    //     return [
+    //         new Middleware('permission:audits-list', only: ['index']),
+    //         new Middleware('permission:audits-view', only: ['show']),
+    //         new Middleware('permission:audits-create', only: ['create', 'store']),
+    //         new Middleware('permission:audits-edit', only: ['edit', 'update']),
+    //         new Middleware('permission:audits-delete', only: ['destroy']),
+    //     ];
+    // }
 	/**
      * Display a listing of the resource.
      *

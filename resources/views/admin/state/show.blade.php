@@ -32,10 +32,6 @@
         </div>
         <div class="card-body">
             <div class="form-group mb-3">
-                <strong>Province:</strong>
-                {{ $state->province->name }}
-            </div>
-            <div class="form-group mb-3">
                 <strong>Name:</strong>
                 {{ $state->name }}
             </div>

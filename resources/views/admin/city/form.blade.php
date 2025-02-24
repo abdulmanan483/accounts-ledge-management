@@ -1,9 +1,10 @@
 <div class="row">
     <div class="form-group col-lg-6 mb-3">
         {{ html()->label('State')->for('state_id') }}
-        {{ html()->select('state_id', states(), $city->state_id)->class('form-control form-select')->placeholder('--Select--')->required() }}
+        {{ html()->select('state_id', states(country_id:settings('default_country_id')), $city->state_id)->class('form-control form-select')->placeholder('--Select--')->required() }}
     </div>
     <div class="form-group col-lg-6 mb-3">
+
         {{ html()->label('Name')->for('name') }}
         {{ html()->text('name', $city->name)->class('form-control')->placeholder('Name')->required() }}
     </div>

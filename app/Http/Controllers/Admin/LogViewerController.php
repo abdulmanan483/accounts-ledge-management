@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Crypt;
+use Rap2hpoutre\LaravelLogViewer\LaravelLogViewer;
+
 /**
  * Class LogViewerController
  * @package Rap2hpoutre\LaravelLogViewer
@@ -17,20 +19,23 @@ class LogViewerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // function __construct()
-    // {
-    //     $this->middleware('permission:log-list',  ['only' => ['index']]);
-    //     $this->middleware('permission:log-view',  ['only' => ['download']]);
-    //     $this->middleware('permission:log-delete',['only' => ['earlyReturn']]);
-    // }
-    public static function middleware(): array
-{
-    return [
-        new Middleware('permission:log-list', only: ['index']),
-        new Middleware('permission:log-view', only: ['download']),
-        new Middleware('permission:log-delete', only: ['earlyReturn']),
-    ];
-}
+    function __construct()
+    {
+        $this->middleware('permission:log-list',  ['only' => ['index']]);
+        $this->middleware('permission:log-view',  ['only' => ['download']]);
+        $this->middleware('permission:log-delete',['only' => ['earlyReturn']]);
+
+        $this->log_viewer = new LaravelLogViewer();
+        $this->request = app('request');
+    }
+//     public static function middleware(): array
+// {
+//     return [
+//         new Middleware('permission:log-list', only: ['index']),
+//         new Middleware('permission:log-view', only: ['download']),
+//         new Middleware('permission:log-delete', only: ['earlyReturn']),
+//     ];
+// }
 
     /**
      * @var \Illuminate\Http\Request
@@ -50,11 +55,11 @@ class LogViewerController extends Controller
     /**
      * LogViewerController constructor.
      */
-    public function __construct()
-    {
-        $this->log_viewer = new LaravelLogViewer();
-        $this->request = app('request');
-    }
+    // public function __construct()
+    // {
+    //     $this->log_viewer = new LaravelLogViewer();
+    //     $this->request = app('request');
+    // }
 
     /**
      * @return array|mixed

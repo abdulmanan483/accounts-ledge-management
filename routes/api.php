@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\Api\UtilitiesController;
 use App\Http\Middleware\VerifyApiToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,4 +27,12 @@ Route::group(['middleware' => VerifyApiToken::class, 'namespace'=>'App\Http\Cont
         Route::post('verify_otp',       'verifiOtp' 	);
         Route::post('reset_password',   'resetPass' 	);
 	});
+
+    Route::prefix('utilities')->group(function () {
+        Route::get('/sites', [UtilitiesController::class, 'getSites']);
+        Route::get('/floors', [UtilitiesController::class, 'getFloors']);
+        Route::get('/blocks', [UtilitiesController::class, 'getBlocks']);
+        Route::get('/departments', [UtilitiesController::class, 'getDepartments']);
+    });
+
 });

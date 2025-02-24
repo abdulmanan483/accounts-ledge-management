@@ -4,16 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Auther;
-use App\Models\Tool;
-use App\Models\Gallery;
-use App\Models\Language;
-use App\Models\JobApplication;
-use App\Models\Feedback;
-use App\Models\Comment;
-use App\Models\Page;
-use Illuminate\Routing\Controllers\Middleware;
 
 class DashboardController extends Controller
 {
@@ -22,16 +12,16 @@ class DashboardController extends Controller
      *
      * @return void
      */
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
-    public static function middleware(): array
-{
-    return [
-        new Middleware('auth'),
-    ];
-}
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+//     public static function middleware(): array
+// {
+//     return [
+//         new Middleware('auth'),
+//     ];
+// }
 
     /**
      * Handle the incoming request.

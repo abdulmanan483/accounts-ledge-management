@@ -36,7 +36,7 @@
             <thead class="thead">
                 <tr>
                     <th>No</th>
-                    <th>Province</th>
+                    {{-- <th>Province</th> --}}
                     <th>Name</th>
                     <th class="text-center">Actions</th>
                 </tr>
@@ -45,7 +45,7 @@
             @foreach ($states as $key => $state)
                 <tr>
                     <td>{{ ++$key }}</td>
-                    <td>{{ $state->province->name }}</td>
+                    {{-- <td>{{ $state->province->name }}</td> --}}
                     <td>{{ $state->name }}</td>
                     <td class="text-center">@include('admin.state.actions')</td>
                 </tr>

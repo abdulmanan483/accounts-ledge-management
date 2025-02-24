@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
-use App\Http\Controllers\Controller;
 
-use App\Models\State;
+use App\Http\Controllers\Controller;
+// use App\Models\State;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\Middleware;
+use Nnjeim\World\Models\State;
 
 /**
  * Class StateController
@@ -18,25 +18,24 @@ class StateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // function __construct()
+    function __construct()
+    {
+        $this->middleware('permission:states-list',  ['only' => ['index']]);
+        $this->middleware('permission:states-view',  ['only' => ['show']]);
+        $this->middleware('permission:states-create',['only' => ['create','store']]);
+        $this->middleware('permission:states-edit',  ['only' => ['edit','update']]);
+        $this->middleware('permission:states-delete',['only' => ['destroy']]);
+    }
+    // public static function middleware(): array
     // {
-    //     $this->middleware('permission:states-list',  ['only' => ['index']]);
-    //     $this->middleware('permission:states-view',  ['only' => ['show']]);
-    //     $this->middleware('permission:states-create',['only' => ['create','store']]);
-    //     $this->middleware('permission:states-edit',  ['only' => ['edit','update']]);
-    //     $this->middleware('permission:states-delete',['only' => ['destroy']]);
+    //     return [
+    //         new Middleware('permission:states-list', only: ['index']),
+    //         new Middleware('permission:states-view', only: ['show']),
+    //         new Middleware('permission:states-create', only: ['create', 'store']),
+    //         new Middleware('permission:states-edit', only: ['edit', 'update']),
+    //         new Middleware('permission:states-delete', only: ['destroy']),
+    //     ];
     // }
-    public static function middleware(): array
-{
-    return [
-        new Middleware('permission:states-list', only: ['index']),
-        new Middleware('permission:states-view', only: ['show']),
-        new Middleware('permission:states-create', only: ['create', 'store']),
-        new Middleware('permission:states-edit', only: ['edit', 'update']),
-        new Middleware('permission:states-delete', only: ['destroy']),
-    ];
-}
-
 
     /**
      * Display a listing of the resource.
@@ -44,7 +43,8 @@ class StateController extends Controller
      */
     public function index()
     {
-        $states = State::paginate();
+        $default_country_id = settings('default_country_id');
+        $states = State::where('country_id',$default_country_id)->paginate();
 
         return view('admin.state.index', compact('states'));
     }

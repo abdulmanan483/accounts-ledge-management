@@ -36,7 +36,7 @@
             <thead class="thead">
                 <tr>
                     <th>No</th>
-                    <th>Province</th>
+                    {{-- <th>Province</th> --}}
                     <th>State</th>
                     <th>Name</th>
                     <th class="text-center">Actions</th>
@@ -46,8 +46,8 @@
             @foreach ($cities as $key => $city)
                 <tr>
                     <td>{{ ++$key }}</td>
-                    <td>{{ $city->state->name }}</td>
-                    <td>{{ $city->state->province->name ?? "" }}</td>
+                    <td>{{ $city->state?->name }}</td>
+                    {{-- <td>{{ $city->state->province->name ?? "" }}</td> --}}
                     <td>{{ $city->name }}</td>
                     <td class="text-center">@include('admin.city.actions')</td>
                 </tr>

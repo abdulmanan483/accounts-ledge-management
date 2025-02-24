@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
-
-use App\Models\City;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\Middleware;
+use Nnjeim\World\Models\City;
 
 /**
  * Class CityController
@@ -18,24 +16,24 @@ class CityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // function __construct()
-    // {
-    //     $this->middleware('permission:cities-list',  ['only' => ['index']]);
-    //     $this->middleware('permission:cities-view',  ['only' => ['show']]);
-    //     $this->middleware('permission:cities-create',['only' => ['create','store']]);
-    //     $this->middleware('permission:cities-edit',  ['only' => ['edit','update']]);
-    //     $this->middleware('permission:cities-delete',['only' => ['destroy']]);
-    // }
-    public static function middleware(): array
-{
-    return [
-        new Middleware('permission:cities-list', only: ['index']),
-        new Middleware('permission:cities-view', only: ['show']),
-        new Middleware('permission:cities-create', only: ['create', 'store']),
-        new Middleware('permission:cities-edit', only: ['edit', 'update']),
-        new Middleware('permission:cities-delete', only: ['destroy']),
-    ];
-}
+    function __construct()
+    {
+        $this->middleware('permission:cities-list',  ['only' => ['index']]);
+        $this->middleware('permission:cities-view',  ['only' => ['show']]);
+        $this->middleware('permission:cities-create',['only' => ['create','store']]);
+        $this->middleware('permission:cities-edit',  ['only' => ['edit','update']]);
+        $this->middleware('permission:cities-delete',['only' => ['destroy']]);
+    }
+//     public static function middleware(): array
+// {
+//     return [
+//         new Middleware('permission:cities-list', only: ['index']),
+//         new Middleware('permission:cities-view', only: ['show']),
+//         new Middleware('permission:cities-create', only: ['create', 'store']),
+//         new Middleware('permission:cities-edit', only: ['edit', 'update']),
+//         new Middleware('permission:cities-delete', only: ['destroy']),
+//     ];
+// }
 
     /**
      * Display a listing of the resource.
@@ -43,7 +41,11 @@ class CityController extends Controller
      */
     public function index()
     {
-        $cities = City::paginate();
+
+        $default_country_id = settings('default_country_id');
+        $cities = City::where('country_id',$default_country_id)->paginate();
+
+        // $cities = City::paginate();
 
         return view('admin.city.index', compact('cities'));
     }
@@ -66,6 +68,9 @@ class CityController extends Controller
      */
     public function store(Request $request)
     {
+        $country = country(settings('default_country_id'));
+        $state = state($request->input('state_id',0));
+        $request->merge(['country_id' => $country->id, 'state_id' => $state->id,'country_code'=>$country->iso2??'','state_code'=>$state->state_code??'','latitude'=>'','longitude'=>'']);
         $city = City::create($request->all());
 
         return redirect()->route('cities.index')
@@ -104,6 +109,10 @@ class CityController extends Controller
      */
     public function update(Request $request, City $city)
     {
+        $country = country(settings('default_country_id'));
+        $state = state($request->input('state_id',0));
+        $request->merge(['country_id' => $country->id, 'state_id' => $state->id,'country_code'=>$country->iso2??'','state_code'=>$state->state_code??'','latitude'=>'','longitude'=>'']);
+
         $city->update($request->all());
 
         return redirect()->route('cities.index')

@@ -36,6 +36,30 @@ class PermissionSeeder extends Seeder
             'cities-edit',
             'cities-delete',
 
+            'sites-list',
+            'sites-view',
+            'sites-create',
+            'sites-edit',
+            'sites-delete',
+
+            'floors-list',
+            'floors-view',
+            'floors-create',
+            'floors-edit',
+            'floors-delete',
+
+            'blocks-list',
+            'blocks-view',
+            'blocks-create',
+            'blocks-edit',
+            'blocks-delete',
+
+            'departments-list',
+            'departments-view',
+            'departments-create',
+            'departments-edit',
+            'departments-delete',
+
             'roles-list',
             'roles-view',
             'roles-create',

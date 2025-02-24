@@ -31,10 +31,10 @@
             <h5 class="mb-0">{{ __('Show') }} City</h5>
         </div>
         <div class="card-body">
-            <div class="form-group mb-3">
+            {{-- <div class="form-group mb-3">
                 <strong>Province:</strong>
                 {{ $city->state->province->name ?? "" }}
-            </div>
+            </div> --}}
             <div class="form-group mb-3">
                 <strong>State:</strong>
                 {{ $city->state->name ?? "" }}

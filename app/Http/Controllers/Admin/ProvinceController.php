@@ -18,24 +18,24 @@ class ProvinceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // function __construct()
-    // {
-    //     $this->middleware('permission:provinces-list',  ['only' => ['index']]);
-    //     $this->middleware('permission:provinces-view',  ['only' => ['show']]);
-    //     $this->middleware('permission:provinces-create',['only' => ['create','store']]);
-    //     $this->middleware('permission:provinces-edit',  ['only' => ['edit','update']]);
-    //     $this->middleware('permission:provinces-delete',['only' => ['destroy']]);
-    // }
-    public static function middleware(): array
-{
-    return [
-        new Middleware('permission:provinces-list', only: ['index']),
-        new Middleware('permission:provinces-view', only: ['show']),
-        new Middleware('permission:provinces-create', only: ['create', 'store']),
-        new Middleware('permission:provinces-edit', only: ['edit', 'update']),
-        new Middleware('permission:provinces-delete', only: ['destroy']),
-    ];
-}
+    function __construct()
+    {
+        $this->middleware('permission:provinces-list',  ['only' => ['index']]);
+        $this->middleware('permission:provinces-view',  ['only' => ['show']]);
+        $this->middleware('permission:provinces-create',['only' => ['create','store']]);
+        $this->middleware('permission:provinces-edit',  ['only' => ['edit','update']]);
+        $this->middleware('permission:provinces-delete',['only' => ['destroy']]);
+    }
+//     public static function middleware(): array
+// {
+//     return [
+//         new Middleware('permission:provinces-list', only: ['index']),
+//         new Middleware('permission:provinces-view', only: ['show']),
+//         new Middleware('permission:provinces-create', only: ['create', 'store']),
+//         new Middleware('permission:provinces-edit', only: ['edit', 'update']),
+//         new Middleware('permission:provinces-delete', only: ['destroy']),
+//     ];
+// }
 
     /**
      * Display a listing of the resource.

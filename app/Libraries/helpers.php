@@ -33,9 +33,19 @@ function uploadFile($file, $path, $width = null, $height = null)
  *
  * @return \Illuminate\Http\Response
  */
+// function settings($key, $default = null)
+// {
+//     return Cache::remember("setting_{$key}", 3600, function () use ($key, $default) {
+//         return Setting::get($key) ? Setting::get($key) : $default;
+//     });
+// }
 function settings($key, $default = null)
 {
-    return Cache::remember("setting_{$key}", 3600, function () use ($key, $default) {
-        return Setting::get($key) ? Setting::get($key) : $default;
+    // Cache all settings at once for 1 hour
+    $settings = Cache::remember('all_settings', 3600, function () {
+        return Setting::pluck('value', 'key')->toArray();
     });
+
+    // Retrieve from cached settings
+    return $settings[$key] ?? $default;
 }

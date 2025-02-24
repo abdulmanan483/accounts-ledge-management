@@ -14,24 +14,24 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // function __construct()
-    // {
-    //     $this->middleware('permission:roles-list',  ['only' => ['index']]);
-    //     $this->middleware('permission:roles-view',  ['only' => ['show']]);
-    //     $this->middleware('permission:roles-create',['only' => ['create','store']]);
-    //     $this->middleware('permission:roles-edit',  ['only' => ['edit','update']]);
-    //     $this->middleware('permission:roles-delete',['only' => ['destroy']]);
-    // }
-    public static function middleware(): array
+    function __construct()
     {
-        return [
-            new Middleware('permission:roles-list', only: ['index']),
-            new Middleware('permission:roles-view', only: ['show']),
-            new Middleware('permission:roles-create', only: ['create', 'store']),
-            new Middleware('permission:roles-edit', only: ['edit', 'update']),
-            new Middleware('permission:roles-delete', only: ['destroy']),
-        ];
+        $this->middleware('permission:roles-list',  ['only' => ['index']]);
+        $this->middleware('permission:roles-view',  ['only' => ['show']]);
+        $this->middleware('permission:roles-create',['only' => ['create','store']]);
+        $this->middleware('permission:roles-edit',  ['only' => ['edit','update']]);
+        $this->middleware('permission:roles-delete',['only' => ['destroy']]);
     }
+    // public static function middleware(): array
+    // {
+    //     return [
+    //         new Middleware('permission:roles-list', only: ['index']),
+    //         new Middleware('permission:roles-view', only: ['show']),
+    //         new Middleware('permission:roles-create', only: ['create', 'store']),
+    //         new Middleware('permission:roles-edit', only: ['edit', 'update']),
+    //         new Middleware('permission:roles-delete', only: ['destroy']),
+    //     ];
+    // }
 
     /**
      * Display a listing of the resource.

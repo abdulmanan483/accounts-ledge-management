@@ -18,24 +18,24 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // function __construct()
-    // {
-    //     $this->middleware('permission:users-list',  ['only' => ['index']]);
-    //     $this->middleware('permission:users-view',  ['only' => ['show']]);
-    //     $this->middleware('permission:users-create',['only' => ['create','store']]);
-    //     $this->middleware('permission:users-edit',  ['only' => ['edit','update']]);
-    //     $this->middleware('permission:users-delete',['only' => ['destroy']]);
-    // }
-    public static function middleware(): array
+    function __construct()
     {
-        return [
-            new Middleware('permission:users-list', only: ['index']),
-            new Middleware('permission:users-view', only: ['show']),
-            new Middleware('permission:users-create', only: ['create', 'store']),
-            new Middleware('permission:users-edit', only: ['edit', 'update']),
-            new Middleware('permission:users-delete', only: ['destroy']),
-        ];
+        $this->middleware('permission:users-list',  ['only' => ['index']]);
+        $this->middleware('permission:users-view',  ['only' => ['show']]);
+        $this->middleware('permission:users-create',['only' => ['create','store']]);
+        $this->middleware('permission:users-edit',  ['only' => ['edit','update']]);
+        $this->middleware('permission:users-delete',['only' => ['destroy']]);
     }
+    // public static function middleware(): array
+    // {
+    //     return [
+    //         new Middleware('permission:users-list', only: ['index']),
+    //         new Middleware('permission:users-view', only: ['show']),
+    //         new Middleware('permission:users-create', only: ['create', 'store']),
+    //         new Middleware('permission:users-edit', only: ['edit', 'update']),
+    //         new Middleware('permission:users-delete', only: ['destroy']),
+    //     ];
+    // }
 
     /**
      * Display a listing of the resource.

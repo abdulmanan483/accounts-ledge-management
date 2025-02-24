@@ -1,15 +1,19 @@
 <?php
 
 use App\Http\Controllers\Admin\AuditController;
+use App\Http\Controllers\Admin\BlockController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\FloorController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProvinceController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\SiteController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
@@ -26,7 +30,7 @@ Route::get('dashboard', DashboardController::class)->name('dashboard');
 | Provinces Routes
 |--------------------------------------------------------------------------
 */
-Route::resource('provinces', ProvinceController::class);
+// Route::resource('provinces', ProvinceController::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +45,34 @@ Route::resource('states', StateController::class);
 |--------------------------------------------------------------------------
 */
 Route::resource('cities', CityController::class);
+
+/*
+|--------------------------------------------------------------------------
+| Sites Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('sites', SiteController::class);
+
+/*
+|--------------------------------------------------------------------------
+| Floors Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('floors', FloorController::class);
+
+/*
+|--------------------------------------------------------------------------
+| Blocks Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('blocks', BlockController::class);
+
+/*
+|--------------------------------------------------------------------------
+| Departments Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('departments', DepartmentController::class);
 
 /*
 |--------------------------------------------------------------------------
