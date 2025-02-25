@@ -10,42 +10,42 @@ class Setting extends Model
 {
     use HasFactory;
 
-    static $rules = [
-        'key' 		=> 'required',
-        'value' 	=> 'required',
+    protected $fillable = [
+        'key', 'name', 'description', 'tab', 'section', 'type', 'value'
     ];
 
-    protected $fillable = ['key', 'value'];
+    // Validation rules
+    static $rules = [
+        'key' => 'required|unique:settings,key',
+        'name' => 'required',
+        'type' => 'required|in:text,image,file,rich_text,number,dropdown',
+        'value' => 'nullable'
+    ];
 
-    public static function get($key) {
-        return self::where('key', $key)->pluck('value')->first();
-    }
-
-    public static function set($data) {
-        return self::upsert($data, ['key'], ['value']);
-    }
-
+    // Retrieve setting value with proper formatting
     public function getValueAttribute($value)
     {
-        if ($this->isFile($value)) {
+        if ($this->type === 'image' || $this->type === 'file') {
             return asset($value);
         }
-
+        if ($this->type === 'number') {
+            return (float) $value;
+        }
         return $value;
     }
 
-    // Helper method to check if value is a file
-    protected function isFile($value)
+    // Get setting by key
+    public static function getSetting($key)
     {
-        $fileExtensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'xls', 'xlsx'];
+        return self::where('key', $key)->pluck('value')->first();
+    }
 
-        foreach ($fileExtensions as $extension) {
-            if (Str::endsWith($value, '.' . $extension)) {
-                \Log::info("File detected: $value");
-                return true;
-            }
-        }
-        \Log::info("Not a file: $value");
-        return false;
+    // Set or update setting
+    public static function setSetting($data)
+    {
+        return self::updateOrCreate(
+            ['key' => $data['key']],
+            $data
+        );
     }
 }

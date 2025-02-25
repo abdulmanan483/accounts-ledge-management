@@ -9,6 +9,8 @@
 <link href="{{ asset('assets/css/all.min.css') }}" id="stylesheet" rel="stylesheet" type="text/css">
 <link href="{{ asset('assets/demo/dropify/css/dropify.css') }}" rel="stylesheet" type="text/css">
 <!-- /global stylesheets -->
+{{-- CUSTOM CSSS --}}
+<link href="{{ asset('assets/css/app.css') }}" id="stylesheet" rel="stylesheet" type="text/css">
 
 <!-- Core JS files -->
 <script src="{{ asset('assets/demo/demo_configurator.js') }}"></script>

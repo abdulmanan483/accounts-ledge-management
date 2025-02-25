@@ -43,7 +43,7 @@
                     <tr>
                         <td>{{ ++$key }}</td>
                         {{tableBody}}
-                        <td class="text-center">@include('{{modelViewFolder}}.{{modelView}}.action')</td>
+                        <td class="text-center">@include('{{modelViewFolder}}.{{modelView}}.actions')</td>
                     </tr>
                 @endforeach
             </tbody>

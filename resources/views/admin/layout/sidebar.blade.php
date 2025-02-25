@@ -103,6 +103,14 @@
         </a>
     </li>
 @endcan
+@can('locations-list')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('locations*') ? 'active' : '' }}" href="{{ route('locations.index') }}">
+            <i class="ph-map-pin"></i>
+            <span>Location</span>
+        </a>
+    </li>
+@endcan
 @canany(['roles-list', 'users-list'])
     <li class="nav-item-header">
         <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Access Management</div>

@@ -22,6 +22,7 @@ class FloorRequest extends FormRequest
     public function rules(): array
     {
         return [
+			'code' => 'nullable|string',
 			'name' => 'required|string',
 			'description' => 'nullable|string',
         ];

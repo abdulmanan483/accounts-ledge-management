@@ -35,7 +35,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between">
             <h5 class="mb-0">{{ __('Show') }} Site</h5>
-            <a class="btn btn-sm btn-success" href="{{ route('sites.edit', $site->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+            <a  title="Edit" class="" href="{{ route('sites.edit', $site->id) }}"><i class="ph-pencil"></i></a>
         </div>
         <div class="card-body">
            

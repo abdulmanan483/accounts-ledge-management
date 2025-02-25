@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Artisan;
 
+use Illuminate\Support\Str;
 
 class SettingController extends Controller
 {
@@ -37,7 +38,57 @@ class SettingController extends Controller
      */
     public function index(Request $request)
     {
-        return view('admin.settings.index');
+        // Get all cached settings
+        $allSettings = settings();
+
+        // Dynamically group settings by category based on key prefixes
+        $settingsGroups = collect($allSettings)->mapWithKeys(function ($value, $key) {
+            $groupKey = explode('_', $key)[0]; // Assuming group names are prefixes (e.g., mail_driver -> mail)
+            return [$groupKey => $key];
+        })->groupBy(function ($key) {
+            return explode('_', $key)[0]; // Group settings by prefix
+        })->map(function ($group) use ($allSettings) {
+            return $group->map(function ($key) use ($allSettings) {
+                return [
+                    'key'   => $key,
+                    'label' => ucwords(str_replace('_', ' ', $key)),
+                    'type'  => $this->getFieldType($key), // Automatically determine input type
+                    'options' => $this->getOptions($key), // For select fields
+                    'value' => $allSettings[$key] ?? ''
+                ];
+            });
+        });
+        // Pass grouped settings to the view
+        return view('admin.settings.index', compact('settingsGroups'));
+    }
+
+    // Dynamically determine field type
+    private function getFieldType($key)
+    {
+        if (Str::contains($key, ['password', 'secret', 'key'])) {
+            return 'password';
+        } elseif (Str::contains($key, ['status', 'type', 'mode'])) {
+            return 'select';
+        } else {
+            return 'text';
+        }
+    }
+
+    // Define options for select fields
+    private function getOptions($key)
+    {
+        $options = [
+            'mail_encryption' => [
+                'tls' => 'TLS',
+                'ssl' => 'SSL'
+            ],
+            'app_status' => [
+                'active' => 'Active',
+                'inactive' => 'Inactive'
+            ]
+        ];
+
+        return $options[$key] ?? [];
     }
 
     /**

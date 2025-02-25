@@ -35,10 +35,14 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between">
             <h5 class="mb-0">{{ __('Show') }} Department</h5>
-            <a class="btn btn-sm btn-success" href="{{ route('departments.edit', $department->id) }}"><i class="fa fa-fw fa-edit"></i> Edit</a>
+            <a  title="Edit" class="" href="{{ route('departments.edit', $department->id) }}"><i class="ph-pencil"></i></a>
         </div>
         <div class="card-body">
            
+                                <div class="form-group mb-2 mb20">
+                                    <strong>Code:</strong>
+                                    {{ $department->code }}
+                                </div>
                                 <div class="form-group mb-2 mb20">
                                     <strong>Name:</strong>
                                     {{ $department->name }}

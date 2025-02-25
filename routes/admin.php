@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\FloorController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProvinceController;
 use App\Http\Controllers\Admin\RoleController;
@@ -73,6 +74,13 @@ Route::resource('blocks', BlockController::class);
 |--------------------------------------------------------------------------
 */
 Route::resource('departments', DepartmentController::class);
+
+/*
+|--------------------------------------------------------------------------
+| Departments Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('locations', LocationController::class);
 
 /*
 |--------------------------------------------------------------------------

@@ -51,7 +51,7 @@
 										<td >{{ $site->name }}</td>
 										<td >{{ $site->description }}</td>
 
-                        <td class="text-center">@include('admin.site.action')</td>
+                        <td class="text-center">@include('admin.site.actions')</td>
                     </tr>
                 @endforeach
             </tbody>

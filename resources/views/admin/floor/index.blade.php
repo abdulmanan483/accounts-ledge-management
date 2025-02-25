@@ -34,7 +34,8 @@
             <thead class="thead">
                 <tr>
                     <th>No</th>
-
+                    
+									<th >Code</th>
 									<th >Name</th>
 									<th >Description</th>
 
@@ -45,11 +46,12 @@
                 @foreach ($floors as $key => $floor)
                     <tr>
                         <td>{{ ++$key }}</td>
-
+                        
+										<td >{{ $floor->code }}</td>
 										<td >{{ $floor->name }}</td>
 										<td >{{ $floor->description }}</td>
 
-                        <td class="text-center">@include('admin.floor.action')</td>
+                        <td class="text-center">@include('admin.floor.actions')</td>
                     </tr>
                 @endforeach
             </tbody>

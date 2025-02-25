@@ -35,6 +35,7 @@
                 <tr>
                     <th>No</th>
                     
+									<th >Code</th>
 									<th >Name</th>
 									<th >Description</th>
 
@@ -46,10 +47,11 @@
                     <tr>
                         <td>{{ ++$key }}</td>
                         
+										<td >{{ $block->code }}</td>
 										<td >{{ $block->name }}</td>
 										<td >{{ $block->description }}</td>
 
-                        <td class="text-center">@include('admin.block.action')</td>
+                        <td class="text-center">@include('admin.block.actions')</td>
                     </tr>
                 @endforeach
             </tbody>

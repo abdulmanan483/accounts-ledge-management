@@ -39,13 +39,36 @@ function uploadFile($file, $path, $width = null, $height = null)
 //         return Setting::get($key) ? Setting::get($key) : $default;
 //     });
 // }
-function settings($key, $default = null)
+// function settings($key, $default = null)
+// {
+//     // Cache all settings at once for 1 hour
+//     $settings = Cache::remember('all_settings', 3600, function () {
+//         return Setting::pluck('value', 'key')->toArray();
+//     });
+
+//     // Retrieve from cached settings
+//     return $settings[$key] ?? $default;
+// }
+
+function settings($key = null, $default = null, $cacheDuration = 3600)
 {
-    // Cache all settings at once for 1 hour
-    $settings = Cache::remember('all_settings', 3600, function () {
+    // Cache all settings for the specified duration (default: 1 hour)
+    $settings = Cache::remember('all_settings', $cacheDuration, function () {
         return Setting::pluck('value', 'key')->toArray();
     });
 
-    // Retrieve from cached settings
+    // If no key is provided, return all settings
+    if (is_null($key)) {
+        return $settings;
+    }
+
+    // If an array of keys is provided, return multiple settings
+    if (is_array($key)) {
+        return collect($key)->mapWithKeys(function ($k) use ($settings, $default) {
+            return [$k => $settings[$k] ?? $default];
+        })->toArray();
+    }
+
+    // Return a single setting value or default if not found
     return $settings[$key] ?? $default;
 }

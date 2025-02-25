@@ -35,6 +35,7 @@
                 <tr>
                     <th>No</th>
                     
+									<th >Code</th>
 									<th >Name</th>
 									<th >Description</th>
 
@@ -46,10 +47,11 @@
                     <tr>
                         <td>{{ ++$key }}</td>
                         
+										<td >{{ $department->code }}</td>
 										<td >{{ $department->name }}</td>
 										<td >{{ $department->description }}</td>
 
-                        <td class="text-center">@include('admin.department.action')</td>
+                        <td class="text-center">@include('admin.department.actions')</td>
                     </tr>
                 @endforeach
             </tbody>

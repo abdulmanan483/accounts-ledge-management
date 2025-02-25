@@ -60,6 +60,12 @@ class PermissionSeeder extends Seeder
             'departments-edit',
             'departments-delete',
 
+            'locations-list',
+            'locations-view',
+            'locations-create',
+            'locations-edit',
+            'locations-delete',
+
             'roles-list',
             'roles-view',
             'roles-create',

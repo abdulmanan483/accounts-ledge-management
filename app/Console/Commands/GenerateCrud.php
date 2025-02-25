@@ -281,7 +281,7 @@ class GenerateCrud extends GeneratorCommand
 
         $this->buildLayout();
 
-        foreach (['index', 'create', 'edit', 'form', 'show','action'] as $view) {
+        foreach (['index', 'create', 'edit', 'form', 'show','actions'] as $view) {
             $viewTemplate = str_replace(
                 array_keys($replace), array_values($replace), $this->getStub("views/{$this->options['stack']}/$view")
             );
