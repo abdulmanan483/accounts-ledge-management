@@ -1,25 +1,24 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Artisan;
 
 class Setting extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'key', 'name', 'description', 'tab', 'section', 'type', 'value'
+        'key', 'name', 'description', 'tab', 'section', 'type', 'value',
     ];
 
     // Validation rules
     static $rules = [
-        'key' => 'required|unique:settings,key',
-        'name' => 'required',
-        'type' => 'required|in:text,image,file,rich_text,number,dropdown',
-        'value' => 'nullable'
+        'key'   => 'required|unique:settings,key',
+        'name'  => 'required',
+        'type'  => 'required|in:text,image,file,rich_text,number,dropdown',
+        'value' => 'nullable',
     ];
 
     // Retrieve setting value with proper formatting
@@ -43,9 +42,10 @@ class Setting extends Model
     // Set or update setting
     public static function setSetting($data)
     {
-        return self::updateOrCreate(
-            ['key' => $data['key']],
-            $data
-        );
+        self::upsert($data, ['key'], ['value']);
+        Artisan::call('optimize:clear');
+        return true;
+
     }
+
 }

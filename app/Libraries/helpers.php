@@ -54,7 +54,7 @@ function settings($key = null, $default = null, $cacheDuration = 3600)
 {
     // Cache all settings for the specified duration (default: 1 hour)
     $settings = Cache::remember('all_settings', $cacheDuration, function () {
-        return Setting::pluck('value', 'key')->toArray();
+        return Setting::all();
     });
 
     // If no key is provided, return all settings

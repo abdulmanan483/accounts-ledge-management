@@ -3,6 +3,7 @@ namespace Database\Seeders;
 
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class SettingsSeeder extends Seeder
 {
@@ -32,10 +33,19 @@ class SettingsSeeder extends Seeder
 
             // Location Settings
             ['key' => 'default_country_id', 'name' => 'Default Country', 'type' => 'dropdown', 'value' => '167', 'tab' => 'Location', 'section' => 'Defaults'],
+
+            // SAP Settings
+            ['key' => 'sap_url', 'name' => 'SAP URL', 'type' => 'text', 'value' => '', 'tab' => 'External API Integrations', 'section' => 'SAP'],
+            ['key' => 'sap_db', 'name' => 'SAP Database', 'type' => 'text', 'value' => '', 'tab' => 'External API Integrations', 'section' => 'SAP'],
+            ['key' => 'sap_username', 'name' => 'SAP Username', 'type' => 'text', 'value' => '', 'tab' => 'External API Integrations', 'section' => 'SAP'],
+            ['key' => 'sap_password', 'name' => 'SAP Password', 'type' => 'password', 'value' => '', 'tab' => 'External API Integrations', 'section' => 'SAP'],
+
+
         ];
 
         foreach ($defaultSettings as $setting) {
             Setting::updateOrCreate(['key' => $setting['key']], $setting);
         }
+        Artisan::call('optimize:clear');
     }
 }
