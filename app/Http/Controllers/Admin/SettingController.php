@@ -34,36 +34,32 @@ class SettingController extends Controller
      * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request)
-{
-    // Get all cached settings
-    $settings = settings(); // Assuming this fetches settings from the database
+    {
+                                              // Get all cached settings
+        $settings = Setting::all(); // Assuming this fetches settings from the database
+        $settingsGroups = [];
 
-    $settingsGroups = [];
+        foreach ($settings as $setting) {
+            // Ensure `tab` and `section` exist before using them
+            $tab     = $setting->tab ?? 'General';
+            $section = $setting->section ?? 'Default';
 
-foreach ($settings as $setting) {
-    // Ensure `tab` and `section` exist before using them
-    $tab = $setting->tab ?? 'General';
-    $section = $setting->section ?? 'Default';
+            // Initialize tab and section if not already set
+            if (! isset($settingsGroups[$tab])) {
+                $settingsGroups[$tab] = [];
+            }
+            if (! isset($settingsGroups[$tab][$section])) {
+                $settingsGroups[$tab][$section] = [];
+            }
 
-    // Initialize tab and section if not already set
-    if (!isset($settingsGroups[$tab])) {
-        $settingsGroups[$tab] = [];
+            // Add setting to the appropriate tab/section
+            $settingsGroups[$tab][$section][$setting->key] = $setting;
+        }
+        // Debugging output
+
+        // Pass grouped settings to the view
+        return view('admin.settings.index', compact('settingsGroups'));
     }
-    if (!isset($settingsGroups[$tab][$section])) {
-        $settingsGroups[$tab][$section] = [];
-    }
-
-    // Add setting to the appropriate tab/section
-    $settingsGroups[$tab][$section][$setting->key] = $setting;
-}
-    // Debugging output
-
-    // Pass grouped settings to the view
-    return view('admin.settings.index', compact('settingsGroups'));
-}
-
-
-
 
     // Dynamically determine field type
     private function getFieldType($key)
@@ -122,13 +118,6 @@ foreach ($settings as $setting) {
                 $data[] = ['key' => $key, 'value' => $value];
             }
         }
-
-        // foreach ($request->file() as $key => $file) {
-        //     if ($image = $request->file($key)) {
-        //         $filenametostore = uploadFile($image, 'settings');
-        //         $data[]          = ['key' => $key, 'value' => $filenametostore];
-        //     }
-        // }
         Setting::setSetting($data);
         return redirect()->back()->with('success', 'Setting updated successfully.');
     }

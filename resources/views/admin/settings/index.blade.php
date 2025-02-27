@@ -22,8 +22,8 @@
             <ul class="nav nav-tabs mb-3" id="settingsTab" role="tablist">
                 @foreach ($settingsGroups as $tab => $sections)
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="{{ $tab }}-tab"
-                            data-bs-toggle="tab" data-bs-target="#{{ $tab }}" type="button" role="tab">
+                        <button class="nav-link {{ $loop->first ? 'active' : '' }}" id="{{ Str::slug($tab, '_') }}-tab"
+                            data-bs-toggle="tab" data-bs-target="#{{ Str::slug($tab, '_') }}" type="button" role="tab">
                             {{ ucfirst($tab) }}
                         </button>
                     </li>
@@ -35,7 +35,7 @@
                 <!-- Tabs Content -->
                 <div class="tab-content" id="settingsTabContent">
                     @foreach ($settingsGroups as $tab => $sections)
-                        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $tab }}"
+                        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ Str::slug($tab, '_') }}"
                             role="tabpanel">
                             <div class="fw-bold border-bottom pb-2 mb-3">{{ ucfirst($tab) }} Settings</div>
                             @foreach ($sections as $section => $settings)
@@ -49,9 +49,19 @@
                                                 @if ($setting['type'] === 'dropdown')
                                                     @if ($setting->key === 'default_country_id')
                                                         <select name="values[{{ $key }}]"
-                                                            class="form-control form-select select" required>
+                                                            class="form-control form-select select">
                                                             <option value="">--Select--</option>
                                                             @foreach (countries() as $optionKey => $optionValue)
+                                                                <option value="{{ $optionKey }}"
+                                                                    name="{{ $key }}"
+                                                                    {{ $setting->value == $optionKey ? 'selected' : '' }}>
+                                                                    {{ $optionValue }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    @elseif($setting->key === 'location_system')
+                                                        <select name="values[{{ $key }}]"
+                                                            class="form-control form-select select">
+                                                            @foreach (json_decode($setting->options) as $optionKey => $optionValue)
                                                                 <option value="{{ $optionKey }}"
                                                                     name="{{ $key }}"
                                                                     {{ $setting->value == $optionKey ? 'selected' : '' }}>

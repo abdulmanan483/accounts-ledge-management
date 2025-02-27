@@ -16,7 +16,10 @@ return new class extends Migration {
             $table->string('section')->default('general');
             $table->string('type')->default('text'); // text, image, file, number, rich_text
             $table->text('value')->nullable();
+            $table->text('options')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+            $table->userTracking();
         });
     }
 

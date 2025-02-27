@@ -22,13 +22,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
-class Department extends Model implements Auditable
+class Department extends BaseModel
 {
-    use SoftDeletes;
-
-    use \OwenIt\Auditing\Auditable;
-    protected $perPage = 20;
-
     /**
      * The attributes that are mass assignable.
      *

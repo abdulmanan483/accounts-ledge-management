@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Generic\DataSource;
+use App\Enums\Setting\LocationSystem;
 use App\Http\Controllers\Controller;
 // use App\Models\State;
 use Illuminate\Http\Request;
@@ -18,13 +20,13 @@ class StateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    function __construct()
+    public function __construct()
     {
-        $this->middleware('permission:states-list',  ['only' => ['index']]);
-        $this->middleware('permission:states-view',  ['only' => ['show']]);
-        $this->middleware('permission:states-create',['only' => ['create','store']]);
-        $this->middleware('permission:states-edit',  ['only' => ['edit','update']]);
-        $this->middleware('permission:states-delete',['only' => ['destroy']]);
+        $this->middleware('permission:states-list', ['only' => ['index']]);
+        $this->middleware('permission:states-view', ['only' => ['show']]);
+        $this->middleware('permission:states-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:states-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:states-delete', ['only' => ['destroy']]);
     }
     // public static function middleware(): array
     // {
@@ -43,8 +45,9 @@ class StateController extends Controller
      */
     public function index()
     {
-        $default_country_id = settings('default_country_id');
-        $states = State::where('country_id',$default_country_id)->paginate();
+        $default_country_id    = settings('default_country_id');
+
+        $states  = State::where('country_id', $default_country_id)->paginate();
 
         return view('admin.state.index', compact('states'));
     }

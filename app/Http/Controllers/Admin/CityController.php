@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
+use App\Enums\Generic\DataSource;
+use App\Enums\Setting\LocationSystem;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Nnjeim\World\Models\City;
@@ -41,9 +44,12 @@ class CityController extends Controller
      */
     public function index()
     {
+        $default_country_id    = settings('default_country_id');
 
-        $default_country_id = settings('default_country_id');
-        $cities = City::where('country_id',$default_country_id)->paginate();
+        $cities = City::where([
+            'country_id'=>$default_country_id,
+        ]
+        )->paginate();
 
         // $cities = City::paginate();
 
@@ -68,9 +74,9 @@ class CityController extends Controller
      */
     public function store(Request $request)
     {
-        $country = country(settings('default_country_id'));
+        $country = country(settings('default_country_id'))??0;
         $state = state($request->input('state_id',0));
-        $request->merge(['country_id' => $country->id, 'state_id' => $state->id,'country_code'=>$country->iso2??'','state_code'=>$state->state_code??'','latitude'=>'','longitude'=>'']);
+        $request->merge(['country_id' => $country?->id??0, 'state_id' => $state->id,'country_code'=>$country?->iso2??'','state_code'=>$state->state_code??'']);
         $city = City::create($request->all());
 
         return redirect()->route('cities.index')
@@ -111,7 +117,7 @@ class CityController extends Controller
     {
         $country = country(settings('default_country_id'));
         $state = state($request->input('state_id',0));
-        $request->merge(['country_id' => $country->id, 'state_id' => $state->id,'country_code'=>$country->iso2??'','state_code'=>$state->state_code??'','latitude'=>'','longitude'=>'']);
+        $request->merge(['country_id' => $country?->id??0, 'state_id' => $state->id,'country_code'=>$country->iso2??'','state_code'=>$state->state_code??'']);
 
         $city->update($request->all());
 

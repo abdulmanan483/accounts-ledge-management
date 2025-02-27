@@ -1,3 +1,5 @@
+{{ html()->hidden('data_source', old('data_srouce',\App\Enums\Generic\DataSource::CUSTOM->value))->required() }}
+
 <div class="row">
     <div class="form-group col-lg-6 mb-3">
         {{ html()->label('State')->for('state_id') }}

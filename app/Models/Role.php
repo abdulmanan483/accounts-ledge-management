@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use OwenIt\Auditing\Contracts\Auditable;
 
 /**
  * Class Role
@@ -19,9 +17,8 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
-class Role extends Model implements Auditable
+class Role extends BaseModel
 {
-    use \OwenIt\Auditing\Auditable;
 
     /**
      * Default number of items per page.
@@ -29,27 +26,21 @@ class Role extends Model implements Auditable
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-
-        $this->perPage = settings('per_page_items') ? : 15;
     }
     protected $casts = [
         'id' => 'integer',
     ];
 
     static $rules = [
-		'name' => 'required',
-		'guard_name' => 'required',
+        'name'       => 'required',
+        'guard_name' => 'required',
     ];
-
-    protected $perPage = 20;
-
     /**
      * Attributes that should be mass-assignable.
      *
      * @var array
      */
-    protected $fillable = ['name','guard_name'];
-
+    protected $fillable = ['name', 'guard_name'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -66,6 +57,5 @@ class Role extends Model implements Auditable
     {
         return $this->hasMany('App\Models\RoleHasPermission', 'role_id', 'id');
     }
-
 
 }

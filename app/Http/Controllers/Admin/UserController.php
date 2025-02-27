@@ -76,9 +76,9 @@ class UserController extends Controller
             'confirm_password' => 'required|same:password',
             'roles'            => 'required',
         ]);
-
         $user = User::create($request->all());
-        $user->assignRole($request->input('roles'));
+        $roles = array_filter(array_map('intval', $request->get('roles')));
+        $user->assignRole($roles);
 
         return redirect()->route('users.index')->with('success', 'User created successfully');
     }

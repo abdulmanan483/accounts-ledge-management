@@ -5,7 +5,8 @@
     </div> --}}
     <div class="form-group col-lg-6 mb-3">
         {{ html()->hidden('country_id', settings('default_country_id'))->required() }}
-        {{ html()->hidden('country_code', country(settings('default_country_id'))->iso2)->required() }}
+        {{ html()->hidden('country_code', country(settings('default_country_id'))?->iso2??0)->required() }}
+        {{ html()->hidden('data_source', old('data_srouce',\App\Enums\Generic\DataSource::CUSTOM->value))->required() }}
         {{ html()->label('Name')->for('name') }}
         {{ html()->text('name', $state->name)->class('form-control')->placeholder('Name')->required() }}
     </div>

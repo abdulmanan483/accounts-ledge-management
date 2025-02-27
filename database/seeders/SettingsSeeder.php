@@ -32,7 +32,12 @@ class SettingsSeeder extends Seeder
             ['key' => 'mail_from_name', 'name' => 'Mail From Name', 'type' => 'text', 'value' => config('mail.from.name', env('MAIL_FROM_NAME', config('app.name'))), 'tab' => 'Mail', 'section' => 'Sender Information'],
 
             // Location Settings
-            ['key' => 'default_country_id', 'name' => 'Default Country', 'type' => 'dropdown', 'value' => '167', 'tab' => 'Location', 'section' => 'Defaults'],
+            ['key' => 'default_country_id', 'name' => 'Default Country', 'type' => 'dropdown', 'value' => 0, 'tab' => 'Location', 'section' => 'Defaults'],
+            // Location System Settings
+            ['key' => 'location_system', 'name' => 'Location System', 'type' => 'dropdown', 'value' => 'package', 'tab' => 'Location', 'section' => 'Location System', 'options' => json_encode([
+                'package' => 'Pre-built Package',
+                'custom' => 'Custom System'
+            ])],
 
             // // SAP Settings
             // ['key' => 'sap_url', 'name' => 'SAP URL', 'type' => 'text', 'value' => '', 'tab' => 'External API Integrations', 'section' => 'SAP'],

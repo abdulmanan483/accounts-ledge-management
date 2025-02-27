@@ -128,7 +128,7 @@ return [
 					'length' => 3,
 				],
 				'state_code' => [
-					'required' => false,
+					'required' => true,
 					'type' => 'string',
 					'length' => 5,
 				],
@@ -144,6 +144,10 @@ return [
 					'required' => false,
 					'type' => 'string',
 				],
+                'data_source' => [
+					'required' => true,
+					'type' => 'string',
+				],
 			],
 		],
 		'cities' => [
@@ -155,9 +159,13 @@ return [
 					'length' => 3,
 				],
 				'state_code' => [
-					'required' => false,
+					'required' => true,
 					'type' => 'string',
 					'length' => 5,
+				],
+                'city_code' => [
+					'required' => true,
+					'type' => 'string',
 				],
 				'latitude' => [
 					'required' => false,
@@ -165,6 +173,10 @@ return [
 				],
 				'longitude' => [
 					'required' => false,
+					'type' => 'string',
+				],
+                'data_source' => [
+					'required' => true,
 					'type' => 'string',
 				],
 			],

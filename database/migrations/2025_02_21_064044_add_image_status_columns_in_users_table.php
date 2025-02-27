@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->text('image')->after('email')->nullable();
             $table->boolean('is_active')->after('remember_token')->default(true);
-            $table->softDeletes();
         });
     }
 
@@ -25,7 +24,6 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn(['image','is_active']);
-            $table->dropSoftDeletes();
         });
     }
 };

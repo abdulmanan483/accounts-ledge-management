@@ -5,9 +5,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Artisan;
 
-class Setting extends Model
+class Setting extends BaseModel
 {
     use HasFactory;
+
+    protected bool $enable_audit = false; // Disable audits for this model
 
     protected $fillable = [
         'key', 'name', 'description', 'tab', 'section', 'type', 'value',
@@ -33,19 +35,18 @@ class Setting extends Model
         return $value;
     }
 
-    // Get setting by key
-    public static function getSetting($key)
-    {
-        return self::where('key', $key)->pluck('value')->first();
-    }
-
     // Set or update setting
     public static function setSetting($data)
     {
-        self::upsert($data, ['key'], ['value']);
+        // self::upsert($data, ['key'], ['value']);
+        foreach ($data as $setting) {
+            self::updateOrCreate(
+                ['key' => $setting['key']], // Unique identifier
+                ['value' => $setting['value']] // Update field
+            );
+        }
         Artisan::call('optimize:clear');
         return true;
-
     }
 
 }

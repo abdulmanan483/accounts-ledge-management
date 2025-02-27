@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+
     }
 
     /**
@@ -19,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Blueprint::macro('userTracking', function () {
+            $this->unsignedBigInteger('created_by')->nullable();
+            $this->unsignedBigInteger('updated_by')->nullable();
+            $this->unsignedBigInteger('deleted_by')->nullable();
+        });
     }
 }

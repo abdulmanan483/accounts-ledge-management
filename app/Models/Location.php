@@ -8,12 +8,8 @@ use Nnjeim\World\Models\City;
 use Nnjeim\World\Models\State;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class Location extends Model implements Auditable
+class Location extends BaseModel
 {
-    use SoftDeletes, \OwenIt\Auditing\Auditable;
-
-    protected $perPage = 20;
-
     protected $fillable = [
         'state_id', 'city_id', 'site_id', 'floor_id', 'block_id', 'department_id', 'name', 'description', 'is_active'
     ];
