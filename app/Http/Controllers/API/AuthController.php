@@ -9,6 +9,8 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\API\BaseController;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 
 class AuthController extends BaseController
 {
@@ -31,13 +33,24 @@ class AuthController extends BaseController
      */
     public function signin(SigninRequest $request)
     {
-        $user = User::whereEmail($request->email)->first();
-        if (!Hash::check($request->password, $user->password)) {
-            return $this->sendError('Invalid credentials provided.');
+        // Attempt login with email & password
+        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return sendError('Invalid credentials provided.');
         }
+
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Check if the user is active
+        if (!$user->active()) {
+            return sendError('Your account is disabled. Contact your admin.');
+        }
+
+        // Generate API token
         $user->token = $user->createToken('user-token')->plainTextToken;
-        return $this->sendResponse(new UserResource($user), 'User login successfully.');
-        return $this->sendError('Your accont is disabled contact your admin.');
+
+        // Return successful response
+        return sendResponse(new UserResource($user), 'User logged in successfully.');
     }
 
     /**

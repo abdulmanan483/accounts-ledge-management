@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\Statuses\Active;
 
 class User extends Authenticatable implements Auditable
 {
@@ -53,7 +54,8 @@ class User extends Authenticatable implements Auditable
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime'
+        'email_verified_at' => 'datetime',
+        'is_active' => Active::class,
     ];
 
     /**
@@ -88,5 +90,8 @@ class User extends Authenticatable implements Auditable
     public function getImageAttribute($image)
     {
         return asset($image);
+    }
+    public function scopeActive(){
+        return $this->where('is_active', 1);
     }
 }

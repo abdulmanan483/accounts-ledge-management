@@ -47,10 +47,11 @@
                         <td>{{ ++$key }}</td>
                         <td>{{ $user->name }}</td>
                         <td>{{ $user->email }}</td>
-                        <td>
+                        <td><x-admin.statuses.active-badge :status="$user->is_active" /></td>
+                        <td class="text-center">
                             @if (!empty($user->getRoleNames()))
                                 @foreach ($user->getRoleNames() as $v)
-                                    <span class="badge bg-primary rounded-pill">{{ $v }}</span>
+                                    <x-admin.badges.primary :message="$v" />
                                 @endforeach
                             @endif
                         </td>
