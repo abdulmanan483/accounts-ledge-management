@@ -308,6 +308,8 @@ class GenerateCrud extends GeneratorCommand
         return [
             '{{layout}}' => $this->layout,
             '{{modelName}}' => $this->name,
+            '{{modelNamePluralSnakeLowerCase}}' => Str::plural(Str::lower(Str::snake($this->name))),
+            '{{modelNameSingularSnakeLowerCase}}' => Str::singular(Str::lower(Str::snake($this->name))),
             '{{modelTitle}}' => Str::title(Str::snake($this->name, ' ')),
             '{{modelTitlePlural}}' => Str::title(Str::snake(Str::plural($this->name), ' ')),
             '{{modelNamespace}}' => $this->modelNamespace,
@@ -332,7 +334,7 @@ class GenerateCrud extends GeneratorCommand
      */
     protected function _getViewPath($view): string
     {
-        $name = Str::lower($this->name);
+        $name = Str::kebab($this->name);
         $folder = $this->getViewNamespaceFolder();
         $path = match ($this->options['stack']) {
             'livewire' => "/views/livewire/$name/$view.blade.php",

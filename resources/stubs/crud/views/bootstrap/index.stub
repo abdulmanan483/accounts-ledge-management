@@ -39,7 +39,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (${{modelNamePluralLowerCase}} as $key => ${{modelNameLowerCase}})
+                @foreach (${{modelNamePluralSnakeLowerCase}} as $key => ${{modelNameLowerCase}})
                     <tr>
                         <td>{{ ++$key }}</td>
                         {{tableBody}}
@@ -48,7 +48,7 @@
                 @endforeach
             </tbody>
         </table>
-        {{ ${{modelNamePluralLowerCase}}->appends(request()->query())->links('vendor.pagination.bordered-rounded') }}
+        {{ ${{modelNamePluralSnakeLowerCase}}->appends(request()->query())->links('vendor.pagination.bordered-rounded') }}
     </div>
 </div>
 @endsection

@@ -49,7 +49,7 @@
                         <td>{{ ucfirst($role->guard_name) }}</td>
                         <td>{{ $role->created_at }}</td>
                         <td>{{ $role->updated_at }}</td>
-                        <td class="text-center">@include('admin.roles.actions')</td>
+                        <td class="text-center">@include('admin.role.actions')</td>
                     </tr>
                 @endforeach
             </tbody>

@@ -1,21 +1,27 @@
-@extends('{{layout}}')
+@extends('admin.layout.app')
 
-@section('title','Update {{modelTitle}}')
+@section('title','Update Role')
 
 @section('header')
 <div class="page-header-content d-lg-flex">
     <div class="d-flex">
         <h4 class="page-title mb-0">
-            Home - <span class="fw-normal">{{modelTitle}} Management</span>
+            Home - <span class="fw-normal">Role Management</span>
         </h4>
     </div>
     <div class="d-lg-block my-lg-auto ms-lg-auto">
-        <div class="d-sm-flex align-items-center mb-3 mb-lg-0 ms-lg-3">
-            <a href="{{ route('{{modelRoute}}.index') }}" class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
+        <div class="d-sm-flex align-items-center mb-3 mb-lg-0 ms-lg-3 gap-2">
+            <a href="{{ route('roles.index') }}" class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
                 <span class="btn-labeled-icon bg-primary text-white rounded-pill">
                     <i class="ph-arrow-circle-left"></i>
                 </span>
                 Back
+            </a>
+             <a href="{{ route('roles.create') }}" class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
+                <span class="btn-labeled-icon bg-primary text-white rounded-pill">
+                    <i class="ph-plus"></i>
+                </span>
+                Create
             </a>
         </div>
     </div>
@@ -26,13 +32,13 @@
 <div class="col-md-12">
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">{{__('Update')}} {{modelTitle}}</h5>
+            <h5 class="mb-0">{{__('Update')}} Role</h5>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('{{modelRoute}}.update', ${{modelNameLowerCase}}->id) }}" class="validate" role="form" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('roles.update', $role->id) }}" class="validate" role="form" enctype="multipart/form-data">
                 {{ method_field('PATCH') }}
                 @csrf
-                @include('{{modelViewFolder}}.{{modelView}}.form')
+                @include('admin.role.form')
             </form>
         </div>
     </div>

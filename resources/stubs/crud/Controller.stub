@@ -19,21 +19,21 @@ class {{modelName}}Controller extends Controller
      */
     function __construct()
     {
-        $this->middleware('permission:{{modelNamePluralLowerCase}}-list',  ['only' => ['index']]);
-        $this->middleware('permission:{{modelNamePluralLowerCase}}-view',  ['only' => ['show']]);
-        $this->middleware('permission:{{modelNamePluralLowerCase}}-create',['only' => ['create','store']]);
-        $this->middleware('permission:{{modelNamePluralLowerCase}}-edit',  ['only' => ['edit','update']]);
-        $this->middleware('permission:{{modelNamePluralLowerCase}}-delete',['only' => ['destroy']]);
+        $this->middleware('permission:{{modelRoute}}-list',  ['only' => ['index']]);
+        $this->middleware('permission:{{modelRoute}}-view',  ['only' => ['show']]);
+        $this->middleware('permission:{{modelRoute}}-create',['only' => ['create','store']]);
+        $this->middleware('permission:{{modelRoute}}-edit',  ['only' => ['edit','update']]);
+        $this->middleware('permission:{{modelRoute}}-delete',['only' => ['destroy']]);
     }
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): View
     {
-        ${{modelNamePluralLowerCase}} = {{modelName}}::paginate();
+        ${{modelNamePluralSnakeLowerCase}} = {{modelName}}::paginate();
 
-        return view('{{modelViewFolder}}.{{modelView}}.index', compact('{{modelNamePluralLowerCase}}'))
-            ->with('i', ($request->input('page', 1) - 1) * ${{modelNamePluralLowerCase}}->perPage());
+        return view('{{modelViewFolder}}.{{modelView}}.index', compact('{{modelNamePluralSnakeLowerCase}}'))
+            ->with('i', ($request->input('page', 1) - 1) * ${{modelNamePluralSnakeLowerCase}}->perPage());
     }
 
     /**
@@ -41,9 +41,9 @@ class {{modelName}}Controller extends Controller
      */
     public function create(): View
     {
-        ${{modelNameLowerCase}} = new {{modelName}}();
+        ${{modelNameSingularSnakeLowerCase}} = new {{modelName}}();
 
-        return view('{{modelViewFolder}}.{{modelView}}.create', compact('{{modelNameLowerCase}}'));
+        return view('{{modelViewFolder}}.{{modelView}}.create', compact('{{modelNameSingularSnakeLowerCase}}'));
     }
 
     /**
@@ -62,9 +62,9 @@ class {{modelName}}Controller extends Controller
      */
     public function show($id): View
     {
-        ${{modelNameLowerCase}} = {{modelName}}::find($id);
+        ${{modelNameSingularSnakeLowerCase}} = {{modelName}}::find($id);
 
-        return view('{{modelViewFolder}}.{{modelView}}.show', compact('{{modelNameLowerCase}}'));
+        return view('{{modelViewFolder}}.{{modelView}}.show', compact('{{modelNameSingularSnakeLowerCase}}'));
     }
 
     /**
@@ -72,17 +72,17 @@ class {{modelName}}Controller extends Controller
      */
     public function edit($id): View
     {
-        ${{modelNameLowerCase}} = {{modelName}}::find($id);
+        ${{modelNameSingularSnakeLowerCase}} = {{modelName}}::find($id);
 
-        return view('{{modelViewFolder}}.{{modelView}}.edit', compact('{{modelNameLowerCase}}'));
+        return view('{{modelViewFolder}}.{{modelView}}.edit', compact('{{modelNameSingularSnakeLowerCase}}'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update({{modelName}}Request $request, {{modelName}} ${{modelNameLowerCase}}): RedirectResponse
+    public function update({{modelName}}Request $request, {{modelName}} ${{modelNameSingularSnakeLowerCase}}): RedirectResponse
     {
-        ${{modelNameLowerCase}}->update($request->validated());
+        ${{modelNameSingularSnakeLowerCase}}->update($request->validated());
 
         return Redirect::route('{{modelRoute}}.index')
             ->with('success', '{{modelName}} updated successfully');

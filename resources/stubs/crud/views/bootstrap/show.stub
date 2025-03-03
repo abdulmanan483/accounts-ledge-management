@@ -35,7 +35,7 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between">
             <h5 class="mb-0">{{ __('Show') }} {{modelTitle}}</h5>
-            <a  title="Edit" class="" href="{{ route('{{modelRoute}}.edit', ${{modelView}}->id) }}"><i class="ph-pencil"></i></a>
+            <a  title="Edit" class="" href="{{ route('{{modelRoute}}.edit', ${{modelNameSingularSnakeLowerCase}}->id) }}"><i class="ph-pencil"></i></a>
         </div>
         <div class="card-body">
            {{viewRows}}

@@ -35,7 +35,7 @@
             <h5 class="mb-0">{{__('Update')}} {{modelTitle}}</h5>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('{{modelRoute}}.update', ${{modelNameLowerCase}}->id) }}" class="validate" role="form" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('{{modelRoute}}.update', ${{modelNameSingularSnakeLowerCase}}->id) }}" class="validate" role="form" enctype="multipart/form-data">
                 {{ method_field('PATCH') }}
                 @csrf
                 @include('{{modelViewFolder}}.{{modelView}}.form')
