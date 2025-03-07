@@ -18,6 +18,12 @@ class PermissionSeeder extends Seeder
         $permissions = [
             'dashboard-participantsCityWiseChart',
 
+            'media-list',
+            'media-view',
+            'media-create',
+            'media-edit',
+            'media-delete',
+
             'provinces-list',
             'provinces-view',
             'provinces-create',

@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\FloorController;
 use App\Http\Controllers\Admin\LocationController;
+use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProvinceController;
 use App\Http\Controllers\Admin\RoleController;
@@ -25,6 +26,13 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('dashboard', DashboardController::class)->name('dashboard');
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard Route
+|--------------------------------------------------------------------------
+*/
+Route::resource('media', MediaController::class);
 
 /*
 |--------------------------------------------------------------------------

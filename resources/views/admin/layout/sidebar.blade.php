@@ -8,6 +8,14 @@
         <span>Dashboard</span>
     </a>
 </li>
+{{-- @can('media-list')
+<li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('media') ? 'active' : '' }}" href="{{ route('media.index') }}">
+        <i class="ph-files"></i>
+        <span>Media</span>
+    </a>
+</li>
+@endcan --}}
 @can('participants-list')
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('participants.*') ? 'active' : '' }}"
