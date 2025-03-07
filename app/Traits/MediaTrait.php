@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\Media\MediaType;
 use App\Models\Media;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,7 +11,7 @@ trait MediaTrait
     /**
      * Upload media file and create a record in the media table.
      */
-    public function uploadMedia(array $files, $path = 'uploads')
+    public function uploadMedia(array $files, $path = 'uploads',$type = MediaType::MEDIA)
     {
         $uploadedMedia = [];
 
@@ -18,12 +19,13 @@ trait MediaTrait
             if ($file instanceof \Illuminate\Http\UploadedFile) {
                 $filePath = $file->store($path, 'public');
 
-                // Create media record in DB linked to this model
-                $media = $this->media()->create([
+                 // Create media record in DB linked to this model
+                 $media = $this->media()->create([
                     'file_path' => $filePath,
                     'file_name' => $file->getClientOriginalName(),
-                    'file_type' => $file->getClientMimeType(),
-                    'size'      => $file->getSize(),
+                    'mime_type' => $file->getClientMimeType(),
+                    'file_size'      => $file->getSize(),
+                    'type'      => $type,
                 ]);
 
                 $uploadedMedia[] = $media;

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Media\MediaType;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -34,6 +35,11 @@ class Media extends BaseModel
      * @var array<int, string>
      */
     protected $fillable = ['file_name', 'file_path', 'mime_type', 'file_size', 'type', 'mediable_type', 'mediable_id', 'created_by', 'updated_by', 'deleted_by'];
-
+    protected function casts(): array
+    {
+        return [
+            'type' => MediaType::class,
+        ];
+    }
 
 }
