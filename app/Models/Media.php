@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 /**
  * Class Medium
  *
@@ -25,6 +27,7 @@ namespace App\Models;
  */
 class Media extends BaseModel
 {
+    use SoftDeletes;
     /**
      * The attributes that are mass assignable.
      *
