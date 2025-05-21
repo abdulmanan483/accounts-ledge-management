@@ -34,6 +34,7 @@ Route::group(['middleware' => VerifyApiToken::class, 'namespace'=>'App\Http\Cont
             Route::get('/blocks', [UtilitiesController::class, 'getBlocks']);
             Route::get('/departments', [UtilitiesController::class, 'getDepartments']);
         });
+        Route::get('/user-role-permissions', [AuthController::class, 'getRolePermissions']);
     });
 
 });

@@ -30,13 +30,12 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
-            if ($request->is('api/*')) {
-                return true;
-            }
-            $request->expectJson();
-
+            return $request->is('api/*') || $request->expectsJson();
         });
         $exceptions->renderable(function (Throwable $e, Request $request) {
+            if(!auth()->check()){
+                return sendError($e->getMessage());
+            }
             if ($request->is('api/*')) {
                 return sendException($e);
             }

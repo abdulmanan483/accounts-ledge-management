@@ -121,7 +121,7 @@ class UserController extends Controller
         $request->validate([
             'name'     => 'required',
             'email'    => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'same:confirm-password',
+            // 'password' => 'same:confirm-password',
             'roles'    => 'required|array',       // Ensure it's an array
             'roles.*'  => 'integer|exists:roles,id' // Ensure each value is an integer and exists in the roles table
         ]);
@@ -131,7 +131,7 @@ class UserController extends Controller
         if (empty($input['password'])) {
             $input = Arr::except($input, ['password']);
         } else {
-            $input['password'] = $input['new_password'];
+            $input['password'] = $input['password'];
         }
 
         $user->update($input);

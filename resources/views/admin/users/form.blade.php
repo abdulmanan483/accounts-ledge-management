@@ -16,7 +16,6 @@
             ->required() !!}
         {!! $errors->first('email', '<div class="invalid-feedback">:message</div>') !!}
     </div>
-
     <div class="form-group col-lg-6 mb-3">
         {!! html()->label('Password')->for('password') !!}
         {!! html()->password('password')

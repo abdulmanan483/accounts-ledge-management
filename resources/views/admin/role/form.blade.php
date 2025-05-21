@@ -9,25 +9,43 @@
     </div>
 
     <h6>Permissions</h6>
-    <div class="row">
-        @foreach($permissionGroup as $key => $permissions)
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <p class="fw-semibold">{{ ucfirst($key) }}</p>
-                    <div class="border px-3 pt-3 pb-2 rounded">
-                        <div class="row">
-                            @foreach($permissions as $permission)
-                                <div class="col-md-6">
-                                    <label class="form-check mb-2">
-                                        {!! html()->checkbox('permission[]', isset($permission['exist']), $permission['id'])
-                                            ->class('form-check-input form-check-input-secondary')
-                                            ->required() !!}
-                                        <span class="form-check-label">{{ ucfirst($permission['name']) }}</span>
-                                    </label>
+
+    {{-- Tabs Navigation --}}
+    <ul class="nav nav-tabs mb-3" id="permissionTabs" role="tablist">
+        @foreach($permissionsByType as $type => $groups)
+            <li class="nav-item" role="presentation">
+                <button class="nav-link @if($loop->first) active @endif" id="tab-{{ $type }}-tab" data-bs-toggle="tab" data-bs-target="#tab-{{ $type }}" type="button" role="tab">
+                    {{ \App\Enums\Permissions\PermissionType::tryFrom($type)->label() }}
+                </button>
+            </li>
+        @endforeach
+    </ul>
+
+    {{-- Tab Content --}}
+    <div class="tab-content" id="permissionTabsContent">
+        @foreach($permissionsByType as $type => $groups)
+            <div class="tab-pane fade @if($loop->first) show active @endif" id="tab-{{ $type }}" role="tabpanel">
+                <div class="row">
+                    @foreach($groups as $group => $permissions)
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <p class="fw-semibold">{{ Str::title(str_replace('-', ' ', $group)) }}</p>
+                                <div class="border px-3 pt-3 pb-2 rounded">
+                                    <div class="row">
+                                        @foreach($permissions as $permission)
+                                            <div class="col-md-6">
+                                                <label class="form-check mb-2">
+                                                    {!! html()->checkbox('permission[]', @$permission['exist']??false, $permission['id'])
+                                                        ->class('form-check-input form-check-input-secondary') !!}
+                                                    <span class="form-check-label">{{ ucfirst($permission['name']) }}</span>
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
-                            @endforeach
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         @endforeach

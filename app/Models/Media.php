@@ -41,5 +41,12 @@ class Media extends BaseModel
             'type' => MediaType::class,
         ];
     }
+ /**
+     * Get the owning model (User, Post, etc.).
+     */
+    public function mediable()
+    {
+        return $this->morphTo();
+    }
 
 }

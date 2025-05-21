@@ -49,15 +49,35 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Contracts\View\View
      */
+    // public function create()
+    // {
+    //     $role            = new Role();
+    //     $permissionGroup = [];
+    //     foreach (Permission::get() as $permission) {
+    //         $title                        = explode('-', $permission->name);
+    //         $permissionGroup[$title[0]][] = ['id' => $permission->id, 'name' => $title[1]];
+    //     }
+    //     return view('admin.role.create', compact('role', 'permissionGroup'));
+    // }
     public function create()
     {
-        $role            = new Role();
-        $permissionGroup = [];
-        foreach (Permission::get() as $permission) {
-            $title                        = explode('-', $permission->name);
-            $permissionGroup[$title[0]][] = ['id' => $permission->id, 'name' => $title[1]];
-        }
-        return view('admin.role.create', compact('role', 'permissionGroup'));
+        $role = new Role();
+
+        $permissionsByType = Permission::all()
+            ->groupBy('type')
+            ->map(function ($permissions) {
+                return $permissions->groupBy('group')
+                    ->map(function ($groupPermissions) {
+                        return $groupPermissions->map(function ($permission) {
+                            return [
+                                'id' => $permission->id,
+                                'name' => $permission->display_name ?? $permission->name,
+                            ];
+                        });
+                    });
+            });
+
+        return view('admin.role.create', compact('role', 'permissionsByType'));
     }
 
     /**
@@ -105,14 +125,24 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        $role            = Role::find($id);
-        $permissionGroup = [];
-        foreach (Permission::get() as $permission) {
-            in_array($permission->name, $role->permissions->pluck('name')->toArray()) ? $exist = 'checked' : $exist = NULL;
-            $title                                                                             = explode('-', $permission->name);
-            $permissionGroup[$title[0]][]                                                      = ['id' => $permission->id, 'name' => $title[1], 'exist' => $exist];
-        }
-        return view('admin.role.edit', compact('role', 'permissionGroup'));
+        $role = Role::findOrFail($id);
+        $assignedPermissions = $role->permissions->pluck('id')->toArray();
+
+        $permissionsByType = Permission::all()
+            ->groupBy('type')
+            ->map(function ($permissions) use ($assignedPermissions) {
+                return $permissions->groupBy('group')
+                    ->map(function ($groupPermissions) use ($assignedPermissions) {
+                        return $groupPermissions->map(function ($permission) use ($assignedPermissions) {
+                            return [
+                                'id' => $permission->id,
+                                'name' => $permission->display_name ?? $permission->name,
+                                'exist' => in_array($permission->id, $assignedPermissions),
+                            ];
+                        });
+                    });
+            });
+        return view('admin.role.edit', compact('role', 'permissionsByType'));
     }
 
     /**

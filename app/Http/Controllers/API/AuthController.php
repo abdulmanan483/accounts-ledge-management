@@ -108,4 +108,12 @@ class AuthController extends BaseController
     {
         //
     }
+    public function getRolePermissions()
+    {
+        $user = Auth::user();
+        if (!$user || empty($user->roles)) {
+            return response()->json(['error' => 'User or role not found'], 404);
+        }
+        return sendResponse(new UserResource($user), 'User roles and permissions fetched successfully.');
+    }
 }
