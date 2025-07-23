@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -20,13 +21,13 @@ class SettingController extends Controller
         $this->middleware('permission:settings-list', ['only' => ['index']]);
         $this->middleware('permission:settings-save', ['only' => ['save']]);
     }
-//     public static function middleware(): array
-// {
-//     return [
-//         new Middleware('permission:settings-list', only: ['index']),
-//         new Middleware('permission:settings-save', only: ['save']),
-//     ];
-// }
+    //     public static function middleware(): array
+    // {
+    //     return [
+    //         new Middleware('permission:settings-list', only: ['index']),
+    //         new Middleware('permission:settings-save', only: ['save']),
+    //     ];
+    // }
 
     /**
      * Display a listing of the resource.
@@ -35,7 +36,7 @@ class SettingController extends Controller
      */
     public function index(Request $request)
     {
-                                              // Get all cached settings
+        // Get all cached settings
         $settings = Setting::all(); // Assuming this fetches settings from the database
         $settingsGroups = [];
 
@@ -112,13 +113,23 @@ class SettingController extends Controller
     public function save(Request $request)
     {
         $data = [];
+        if ($request->has('values')) {
+            foreach ($request->all('values')['values'] as $key => $value) {
+                // If file input exists for this key, override value
+                if ($request->hasFile("values.$key")) {
+                    $file = $request->file("values.$key");
 
-        if ($request->values) {
-            foreach ($request->input('values') as $key => $value) {
+                    // You can customize folder/size per key if needed
+                    $path = uploadFile($file, 'settings', 300, 300); // e.g., 300x300 image
+                    $value = $path;
+                }
+
                 $data[] = ['key' => $key, 'value' => $value];
             }
         }
+
         Setting::setSetting($data);
+
         return redirect()->back()->with('success', 'Setting updated successfully.');
     }
 }

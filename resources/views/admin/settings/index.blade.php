@@ -55,7 +55,8 @@
                                                                 <option value="{{ $optionKey }}"
                                                                     name="{{ $key }}"
                                                                     {{ $setting->value == $optionKey ? 'selected' : '' }}>
-                                                                    {{ $optionValue }}</option>
+                                                                    {{ $optionValue }}
+                                                                </option>
                                                             @endforeach
                                                         </select>
                                                     @elseif($setting->key === 'location_system')
@@ -65,9 +66,19 @@
                                                                 <option value="{{ $optionKey }}"
                                                                     name="{{ $key }}"
                                                                     {{ $setting->value == $optionKey ? 'selected' : '' }}>
-                                                                    {{ $optionValue }}</option>
+                                                                    {{ $optionValue }}
+                                                                </option>
                                                             @endforeach
                                                         </select>
+                                                    @endif
+                                                @elseif($setting['type'] === 'image')
+                                                    <input type="file" name="values[{{ $key }}]"
+                                                        class="form-control">
+                                                    @if (!empty($setting->value))
+                                                        <div class="mt-2">
+                                                            <img src="{{ asset($setting->value) }}" alt="Image Preview"
+                                                                style="max-height: 100px;">
+                                                        </div>
                                                     @endif
                                                 @elseif($setting['type'] === 'password')
                                                     <input type="password" name="values[{{ $key }}]"
