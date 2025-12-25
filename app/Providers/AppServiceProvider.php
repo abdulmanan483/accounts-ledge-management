@@ -2,6 +2,16 @@
 
 namespace App\Providers;
 
+use App\Interfaces\CityInterface;
+use App\Interfaces\CountryInterface;
+use App\Interfaces\StateInterface;
+use App\Interfaces\UserInterface;
+use App\Models\BaseModel;
+use App\Observers\BaseObserver;
+use App\Repositories\CityRepository;
+use App\Repositories\CountryRepository;
+use App\Repositories\StateRepository;
+use App\Repositories\UserRepository;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\ServiceProvider;
 
@@ -12,7 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
+        $this->app->bind(CountryInterface::class,CountryRepository::class);
+        $this->app->bind(StateInterface::class,StateRepository::class);
+        $this->app->bind(CityInterface::class,CityRepository::class);
+        $this->app->bind(UserInterface::class,UserRepository::class);
     }
 
     /**
@@ -20,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        BaseModel::observe(BaseObserver::class);
         Blueprint::macro('userTracking', function () {
             $this->unsignedBigInteger('created_by')->nullable();
             $this->unsignedBigInteger('updated_by')->nullable();

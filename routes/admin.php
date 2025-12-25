@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\BlockController;
+use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -12,6 +13,8 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\ProvinceController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\SecureFileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\UserController;
@@ -33,6 +36,13 @@ Route::get('dashboard', DashboardController::class)->name('dashboard');
 |--------------------------------------------------------------------------
 */
 Route::resource('media', MediaController::class);
+
+/*
+|--------------------------------------------------------------------------
+| Countries Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('countries', CountryController::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -60,35 +70,35 @@ Route::resource('cities', CityController::class);
 | Sites Routes
 |--------------------------------------------------------------------------
 */
-Route::resource('sites', SiteController::class);
+// Route::resource('sites', SiteController::class);
 
 /*
 |--------------------------------------------------------------------------
 | Floors Routes
 |--------------------------------------------------------------------------
 */
-Route::resource('floors', FloorController::class);
+// Route::resource('floors', FloorController::class);
 
 /*
 |--------------------------------------------------------------------------
 | Blocks Routes
 |--------------------------------------------------------------------------
 */
-Route::resource('blocks', BlockController::class);
+// Route::resource('blocks', BlockController::class);
 
 /*
 |--------------------------------------------------------------------------
 | Departments Routes
 |--------------------------------------------------------------------------
 */
-Route::resource('departments', DepartmentController::class);
+// Route::resource('departments', DepartmentController::class);
 
 /*
 |--------------------------------------------------------------------------
 | Departments Routes
 |--------------------------------------------------------------------------
 */
-Route::resource('locations', LocationController::class);
+// Route::resource('locations', LocationController::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -96,6 +106,13 @@ Route::resource('locations', LocationController::class);
 |--------------------------------------------------------------------------
 */
 Route::resource('roles', RoleController::class);
+
+/*
+|--------------------------------------------------------------------------
+| Roles Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('permissions', PermissionController::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -157,3 +174,8 @@ Route::controller(SettingController::class)->prefix('settings')->as('settings.')
 Route::get('logs',
 	[\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']
 )->name('logs');
+
+
+Route::get('/secure-file/{file_path}', [SecureFileController::class, 'show'])
+    ->middleware('auth')
+    ->name('secure.file');

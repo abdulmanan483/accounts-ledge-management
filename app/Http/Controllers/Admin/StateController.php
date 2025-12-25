@@ -1,62 +1,56 @@
 <?php
+
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Generic\DataSource;
-use App\Enums\Setting\LocationSystem;
 use App\Http\Controllers\Controller;
-// use App\Models\State;
+use App\Models\State;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\Middleware;
-use Nnjeim\World\Models\State;
+use App\Http\Requests\Admin\StateRequest;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+use App\Interfaces\StateInterface;
 
-/**
- * Class StateController
- * @package App\Http\Controllers
- */
 class StateController extends Controller
 {
+    protected StateInterface $state;
+
     /**
-     * Display a listing of the resource.
+     * Constructor.
      *
-     * @return \Illuminate\Http\Response
+     * @param StateInterface $state
      */
-    public function __construct()
+    function __construct(StateInterface $state)
     {
-        $this->middleware('permission:states-list', ['only' => ['index']]);
-        $this->middleware('permission:states-view', ['only' => ['show']]);
-        $this->middleware('permission:states-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:states-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:states-delete', ['only' => ['destroy']]);
+        $this->state = $state;
+
+        $this->middleware('permission:states-list',  ['only' => ['index']]);
+        $this->middleware('permission:states-view',  ['only' => ['show']]);
+        $this->middleware('permission:states-create',['only' => ['create','store']]);
+        $this->middleware('permission:states-edit',  ['only' => ['edit','update']]);
+        $this->middleware('permission:states-delete',['only' => ['destroy']]);
     }
-    // public static function middleware(): array
-    // {
-    //     return [
-    //         new Middleware('permission:states-list', only: ['index']),
-    //         new Middleware('permission:states-view', only: ['show']),
-    //         new Middleware('permission:states-create', only: ['create', 'store']),
-    //         new Middleware('permission:states-edit', only: ['edit', 'update']),
-    //         new Middleware('permission:states-delete', only: ['destroy']),
-    //     ];
-    // }
 
     /**
      * Display a listing of the resource.
-     * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(Request $request): View
     {
-        $default_country_id    = settings('default_country_id');
+        $pagination_mode = $request->input('pagination_mode','client');
+        if($pagination_mode == 'client'){
+            $states = $this->state->all();
+            return view('admin.state.index', compact('states'));
+        }
+        $states = $this->state->paginate();
 
-        $states  = State::where('country_id', $default_country_id)->paginate();
-
-        return view('admin.state.index', compact('states'));
+        return view('admin.state.index', compact('states'))
+            ->with('i', ($request->input('page', 1) - 1) * $states->perPage());
     }
 
     /**
      * Show the form for creating a new resource.
-     * @return \Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(): View
     {
         $state = new State();
 
@@ -65,65 +59,51 @@ class StateController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StateRequest $request): RedirectResponse
     {
-        $state = State::create($request->all());
+        $this->state->create($request->validated());
 
-        return redirect()->route('states.index')
+        return Redirect::route('states.index')
             ->with('success', 'State created successfully.');
     }
 
     /**
      * Display the specified resource.
-     * @param  int $id
-     * @return \Illuminate\Contracts\View\View
      */
-    public function show($id)
+    public function show($id): View
     {
-        $state = State::find($id);
+        $state = $this->state->find($id);
 
         return view('admin.state.show', compact('state'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     * @param  int $id
-     * @return \Illuminate\Contracts\View\View
      */
-    public function edit($id)
+    public function edit($id): View
     {
-        $state = State::find($id);
+        $state = $this->state->find($id);
 
         return view('admin.state.edit', compact('state'));
     }
 
     /**
      * Update the specified resource in storage.
-     * @param  \Illuminate\Http\Request $request
-     * @param  State $state
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, State $state)
+    public function update(StateRequest $request, State $state): RedirectResponse
     {
-        $state->update($request->all());
+        $this->state->update($state, $request->validated());
 
-        return redirect()->route('states.index')
+        return Redirect::route('states.index')
             ->with('success', 'State updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Exception
-     */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
-        $state = State::find($id)->delete();
+        $this->state->delete($id);
 
-        return redirect()->route('states.index')
+        return Redirect::route('states.index')
             ->with('success', 'State deleted successfully');
     }
 }

@@ -1,23 +1,27 @@
 @extends('admin.layout.app')
 
-@section('title')
-    {{ __('Update') }} State
-@endsection
+@section('title','Update State')
 
 @section('header')
 <div class="page-header-content d-lg-flex">
     <div class="d-flex">
         <h4 class="page-title mb-0">
-            Home - <span class="fw-normal">State Managment</span>
+            Home - <span class="fw-normal">State Management</span>
         </h4>
     </div>
     <div class="d-lg-block my-lg-auto ms-lg-auto">
-        <div class="d-sm-flex align-items-center mb-3 mb-lg-0 ms-lg-3">
+        <div class="d-sm-flex align-items-center mb-3 mb-lg-0 ms-lg-3 gap-2">
             <a href="{{ route('states.index') }}" class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
                 <span class="btn-labeled-icon bg-primary text-white rounded-pill">
                     <i class="ph-arrow-circle-left"></i>
                 </span>
                 Back
+            </a>
+             <a href="{{ route('states.create') }}" class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
+                <span class="btn-labeled-icon bg-primary text-white rounded-pill">
+                    <i class="ph-plus"></i>
+                </span>
+                Create
             </a>
         </div>
     </div>
@@ -28,12 +32,12 @@
 <div class="col-md-12">
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">{{ __('Edit ') }} State </h5>
+            <h5 class="mb-0">{{__('Update')}} State</h5>
         </div>
         <div class="card-body">
             <form method="POST" action="{{ route('states.update', $state->id) }}" class="validate" role="form" enctype="multipart/form-data">
-                @csrf
                 {{ method_field('PATCH') }}
+                @csrf
                 @include('admin.state.form')
             </form>
         </div>
@@ -58,13 +62,21 @@
                 $(element).removeClass('is-invalid');
                 $(element).addClass('is-valid');
             },
+            success: function(label) {
+                label.addClass('validation-valid-label').text('Success.');
+            },
             errorPlacement: function(error, element) {
                 if (element.hasClass('select2-hidden-accessible')) {
                     error.appendTo(element.parent());
-                }else if (element.parents().hasClass('form-control-feedback') || element.parents().hasClass('form-check') || element.parents().hasClass('input-group')) {
+                } else if (element.parents().hasClass('form-control-feedback') || element.parents().hasClass('form-check') || element.parents().hasClass('input-group')) {
                     error.appendTo(element.parent().parent());
-                }else {
+                } else {
                     error.insertAfter(element);
+                }
+            },
+            rules: {
+                "permission[]": {
+                    minlength: 2
                 }
             }
         });

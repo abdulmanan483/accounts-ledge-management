@@ -2,65 +2,55 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Generic\DataSource;
-use App\Enums\Setting\LocationSystem;
 use App\Http\Controllers\Controller;
+use App\Models\City;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Nnjeim\World\Models\City;
+use App\Http\Requests\Admin\CityRequest;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+use App\Interfaces\CityInterface;
 
-/**
- * Class CityController
- * @package App\Http\Controllers
- */
 class CityController extends Controller
 {
+    protected CityInterface $city;
+
     /**
-     * Display a listing of the resource.
+     * Constructor.
      *
-     * @return \Illuminate\Http\Response
+     * @param CityInterface $city
      */
-    function __construct()
+    function __construct(CityInterface $city)
     {
+        $this->city = $city;
+
         $this->middleware('permission:cities-list',  ['only' => ['index']]);
         $this->middleware('permission:cities-view',  ['only' => ['show']]);
         $this->middleware('permission:cities-create',['only' => ['create','store']]);
         $this->middleware('permission:cities-edit',  ['only' => ['edit','update']]);
         $this->middleware('permission:cities-delete',['only' => ['destroy']]);
     }
-//     public static function middleware(): array
-// {
-//     return [
-//         new Middleware('permission:cities-list', only: ['index']),
-//         new Middleware('permission:cities-view', only: ['show']),
-//         new Middleware('permission:cities-create', only: ['create', 'store']),
-//         new Middleware('permission:cities-edit', only: ['edit', 'update']),
-//         new Middleware('permission:cities-delete', only: ['destroy']),
-//     ];
-// }
 
     /**
      * Display a listing of the resource.
-     * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(Request $request): View
     {
-        $default_country_id    = settings('default_country_id');
+        $pagination_mode = $request->input('pagination_mode','server');
+        if($pagination_mode == 'client'){
+            $cities = $this->city->all();
+            return view('admin.city.index', compact('cities'));
+        }
+        $cities = $this->city->paginate();
 
-        $cities = City::where([
-            'country_id'=>$default_country_id,
-        ]
-        )->paginate();
-
-        // $cities = City::paginate();
-
-        return view('admin.city.index', compact('cities'));
+        return view('admin.city.index', compact('cities'))
+            ->with('i', ($request->input('page', 1) - 1) * $cities->perPage());
     }
 
     /**
      * Show the form for creating a new resource.
-     * @return \Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(): View
     {
         $city = new City();
 
@@ -69,72 +59,51 @@ class CityController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(CityRequest $request): RedirectResponse
     {
-        $country = country(settings('default_country_id'))??0;
-        $state = state($request->input('state_id',0));
-        $request->merge(['country_id' => $country?->id??0, 'state_id' => $state->id,'country_code'=>$country?->iso2??'','state_code'=>$state->state_code??'']);
-        $city = City::create($request->all());
+        $this->city->create($request->validated());
 
-        return redirect()->route('cities.index')
+        return Redirect::route('cities.index')
             ->with('success', 'City created successfully.');
     }
 
     /**
      * Display the specified resource.
-     * @param  int $id
-     * @return \Illuminate\Contracts\View\View
      */
-    public function show($id)
+    public function show($id): View
     {
-        $city = City::find($id);
+        $city = $this->city->find($id);
 
         return view('admin.city.show', compact('city'));
     }
 
     /**
      * Show the form for editing the specified resource.
-     * @param  int $id
-     * @return \Illuminate\Contracts\View\View
      */
-    public function edit($id)
+    public function edit($id): View
     {
-        $city = City::find($id);
+        $city = $this->city->find($id);
 
         return view('admin.city.edit', compact('city'));
     }
 
     /**
      * Update the specified resource in storage.
-     * @param  \Illuminate\Http\Request $request
-     * @param  City $city
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, City $city)
+    public function update(CityRequest $request, City $city): RedirectResponse
     {
-        $country = country(settings('default_country_id'));
-        $state = state($request->input('state_id',0));
-        $request->merge(['country_id' => $country?->id??0, 'state_id' => $state->id,'country_code'=>$country->iso2??'','state_code'=>$state->state_code??'']);
+        $this->city->update($city, $request->validated());
 
-        $city->update($request->all());
-
-        return redirect()->route('cities.index')
+        return Redirect::route('cities.index')
             ->with('success', 'City updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Exception
-     */
-    public function destroy($id)
+    public function destroy($id): RedirectResponse
     {
-        $city = City::find($id)->delete();
+        $this->city->delete($id);
 
-        return redirect()->route('cities.index')
+        return Redirect::route('cities.index')
             ->with('success', 'City deleted successfully');
     }
 }

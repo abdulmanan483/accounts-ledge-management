@@ -30,6 +30,11 @@ class {{modelName}}Controller extends Controller
      */
     public function index(Request $request): View
     {
+        $pagination_mode = $request->input('pagination_mode','client');
+        if($pagination_mode == 'client'){
+            ${{modelNamePluralSnakeLowerCase}} = {{modelName}}::all();
+            return view('{{modelViewFolder}}.{{modelView}}.index', compact('{{modelNamePluralSnakeLowerCase}}'));
+        }
         ${{modelNamePluralSnakeLowerCase}} = {{modelName}}::paginate();
 
         return view('{{modelViewFolder}}.{{modelView}}.index', compact('{{modelNamePluralSnakeLowerCase}}'))

@@ -30,6 +30,18 @@
         <div class="card-header">
             <h5 class="mb-0">{{modelTitlePlural}}</h5>
         </div>
+        <div class="p-3 pb-0">
+            <form method="GET" class="mb-3">
+                <label for="pagination_mode">Pagination Mode:</label>
+                <select name="pagination_mode" id="pagination_mode" onchange="this.form.submit()"
+                    class="form-select w-auto d-inline-block ms-2">
+                    <option value="server" {{ request('pagination_mode') === 'server' ? 'selected' : '' }}>Server-side
+                    </option>
+                    <option value="client" {{ request('pagination_mode') == '' || request('pagination_mode') === 'client' ? 'selected' : '' }}>Client-side
+                    </option>
+                </select>
+            </form>
+        </div>
         <table class="table datatable-basic">
             <thead class="thead">
                 <tr>
@@ -48,7 +60,9 @@
                 @endforeach
             </tbody>
         </table>
-        {{ ${{modelNamePluralSnakeLowerCase}}->appends(request()->query())->links('vendor.pagination.bordered-rounded') }}
+        @if(request('pagination_mode') === 'server')
+            {{ ${{modelNamePluralSnakeLowerCase}}->appends(request()->query())->links('vendor.pagination.flat-rounded') }}
+        @endif
     </div>
 </div>
 @endsection

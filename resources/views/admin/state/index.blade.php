@@ -1,14 +1,12 @@
 @extends('admin.layout.app')
 
-@section('title')
-    State
-@endsection
+@section('title', 'States')
 
 @section('header')
 <div class="page-header-content d-lg-flex">
     <div class="d-flex">
         <h4 class="page-title mb-0">
-            Home - <span class="fw-normal">State Managment</span>
+            Home - <span class="fw-normal">State Management</span>
         </h4>
     </div>
     @can('states-create')
@@ -18,7 +16,7 @@
                 <span class="btn-labeled-icon bg-primary text-white rounded-pill">
                     <i class="ph-plus"></i>
                 </span>
-                Create New
+                Create
             </a>
         </div>
     </div>
@@ -30,29 +28,49 @@
 <div class="col-sm-12">
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">State</h5>
+            <h5 class="mb-0">States</h5>
+        </div>
+        <div class="p-3 pb-0">
+            <form method="GET" class="mb-3">
+                <label for="pagination_mode">Pagination Mode:</label>
+                <select name="pagination_mode" id="pagination_mode" onchange="this.form.submit()"
+                    class="form-select w-auto d-inline-block ms-2">
+                    <option value="server" {{ request('pagination_mode') === 'server' ? 'selected' : '' }}>Server-side
+                    </option>
+                    <option value="client" {{ request('pagination_mode') == '' || request('pagination_mode') === 'client' ? 'selected' : '' }}>Client-side
+                    </option>
+                </select>
+            </form>
         </div>
         <table class="table datatable-basic">
             <thead class="thead">
                 <tr>
                     <th>No</th>
-                    {{-- <th>Province</th> --}}
-                    <th>Name</th>
+                    
+									<th >Country Id</th>
+									<th >Name</th>
+									<th >Country Code</th>
+
                     <th class="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
-            @foreach ($states as $key => $state)
-                <tr>
-                    <td>{{ ++$key }}</td>
-                    {{-- <td>{{ $state->province->name }}</td> --}}
-                    <td>{{ $state->name }}</td>
-                    <td class="text-center">@include('admin.state.actions')</td>
-                </tr>
-            @endforeach
+                @foreach ($states as $key => $state)
+                    <tr>
+                        <td>{{ ++$key }}</td>
+                        
+										<td >{{ $state->country_id }}</td>
+										<td >{{ $state->name }}</td>
+										<td >{{ $state->country_code }}</td>
+
+                        <td class="text-center">@include('admin.state.actions')</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
-        {{ $states->links('vendor.pagination.bordered-rounded') }}
+        @if(request('pagination_mode') === 'server')
+            {{ $states->appends(request()->query())->links('vendor.pagination.flat-rounded') }}
+        @endif
     </div>
 </div>
 @endsection
@@ -64,9 +82,7 @@
             buttonsStyling: false,
             customClass: {
                 confirmButton: 'btn btn-primary',
-                cancelButton: 'btn btn-light',
-                denyButton: 'btn btn-light',
-                input: 'form-control'
+                cancelButton: 'btn btn-light'
             }
         });
         $(".sa-confirm").click(function (event) {
@@ -78,13 +94,12 @@
                 showCancelButton: true,
                 confirmButtonText: 'Yes, delete it!',
                 cancelButtonText: 'No, cancel!',
-                buttonsStyling: false,
                 customClass: {
                     confirmButton: 'btn btn-success',
                     cancelButton: 'btn btn-danger'
                 }
             }).then((result) => {
-                if (result.value === true)  $(this).closest("form").submit();
+                if (result.isConfirmed) $(this).closest("form").submit();
             });
         });
     });

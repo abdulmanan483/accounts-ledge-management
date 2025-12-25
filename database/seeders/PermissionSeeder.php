@@ -19,32 +19,38 @@ class PermissionSeeder extends Seeder
                 'media' => [
                     'media-list', 'media-view', 'media-create', 'media-edit', 'media-delete',
                 ],
-                'provinces' => [
-                    'provinces-list', 'provinces-view', 'provinces-create', 'provinces-edit', 'provinces-delete',
+                'countries' => [
+                    'countries-list', 'countries-view', 'countries-create', 'countries-edit', 'countries-delete',
                 ],
+                // 'provinces' => [
+                //     'provinces-list', 'provinces-view', 'provinces-create', 'provinces-edit', 'provinces-delete',
+                // ],
                 'states' => [
                     'states-list', 'states-view', 'states-create', 'states-edit', 'states-delete',
                 ],
                 'cities' => [
                     'cities-list', 'cities-view', 'cities-create', 'cities-edit', 'cities-delete',
                 ],
-                'sites' => [
-                    'sites-list', 'sites-view', 'sites-create', 'sites-edit', 'sites-delete',
-                ],
-                'floors' => [
-                    'floors-list', 'floors-view', 'floors-create', 'floors-edit', 'floors-delete',
-                ],
-                'blocks' => [
-                    'blocks-list', 'blocks-view', 'blocks-create', 'blocks-edit', 'blocks-delete',
-                ],
-                'departments' => [
-                    'departments-list', 'departments-view', 'departments-create', 'departments-edit', 'departments-delete',
-                ],
-                'locations' => [
-                    'locations-list', 'locations-view', 'locations-create', 'locations-edit', 'locations-delete',
-                ],
+                // 'sites' => [
+                //     'sites-list', 'sites-view', 'sites-create', 'sites-edit', 'sites-delete',
+                // ],
+                // 'floors' => [
+                //     'floors-list', 'floors-view', 'floors-create', 'floors-edit', 'floors-delete',
+                // ],
+                // 'blocks' => [
+                //     'blocks-list', 'blocks-view', 'blocks-create', 'blocks-edit', 'blocks-delete',
+                // ],
+                // 'departments' => [
+                //     'departments-list', 'departments-view', 'departments-create', 'departments-edit', 'departments-delete',
+                // ],
+                // 'locations' => [
+                //     'locations-list', 'locations-view', 'locations-create', 'locations-edit', 'locations-delete',
+                // ],
                 'roles' => [
                     'roles-list', 'roles-view', 'roles-create', 'roles-edit', 'roles-delete',
+                ],
+                'permissions' => [
+                    'permissions-list', 'permissions-view', 'permissions-create', 'permissions-edit', 'permissions-delete',
                 ],
                 'users' => [
                     'users-list', 'users-view', 'users-create', 'users-edit', 'users-delete',

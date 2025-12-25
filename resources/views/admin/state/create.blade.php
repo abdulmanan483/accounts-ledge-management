@@ -1,14 +1,12 @@
 @extends('admin.layout.app')
 
-@section('title')
-{{ __('Create') }} State
-@endsection
+@section('title', 'Create State')
 
 @section('header')
 <div class="page-header-content d-lg-flex">
     <div class="d-flex">
         <h4 class="page-title mb-0">
-            Home - <span class="fw-normal">State Managment</span>
+            Home - <span class="fw-normal">State Management</span>
         </h4>
     </div>
     <div class="d-lg-block my-lg-auto ms-lg-auto">
@@ -57,13 +55,21 @@
                 $(element).removeClass('is-invalid');
                 $(element).addClass('is-valid');
             },
+            success: function(label) {
+                label.addClass('validation-valid-label').text('Success.');
+            },
             errorPlacement: function(error, element) {
                 if (element.hasClass('select2-hidden-accessible')) {
                     error.appendTo(element.parent());
-                }else if (element.parents().hasClass('form-control-feedback') || element.parents().hasClass('form-check') || element.parents().hasClass('input-group')) {
+                } else if (element.parents().hasClass('form-control-feedback') || element.parents().hasClass('form-check') || element.parents().hasClass('input-group')) {
                     error.appendTo(element.parent().parent());
-                }else {
+                } else {
                     error.insertAfter(element);
+                }
+            },
+            rules: {
+                "permission[]": {
+                    minlength: 2
                 }
             }
         });

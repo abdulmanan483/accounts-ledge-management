@@ -16,7 +16,7 @@
     </a>
 </li>
 @endcan --}}
-@can('participants-list')
+{{-- @can('participants-list')
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('participants.*') ? 'active' : '' }}"
             href="{{ route('participants.index') }}">
@@ -48,13 +48,21 @@
             <span>Winners</span>
         </a>
     </li>
-@endcan
-@canany(['states-list', 'cities-list'])
+@endcan --}}
+@canany(['countries-list', 'states-list', 'cities-list'])
     <li class="nav-item-header">
         <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Catalog Management</div>
         <i class="ph-dots-three sidebar-resize-show"></i>
     </li>
 @endcanany
+@can('countries-list')
+<li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('countries*') ? 'active' : ''}}" href="{{ route('countries.index') }}">
+        <i class="ph-map-pin"></i>
+        <span>Countries</span>
+    </a>
+</li>
+@endcan
 {{-- @can('provinces-list')
 <li class="nav-item">
     <a class="nav-link {{ request()->routeIs('provinces*') ? 'active' : ''}}" href="{{ route('provinces.index') }}">
@@ -79,7 +87,7 @@
         </a>
     </li>
 @endcan
-@can('sites-list')
+{{-- @can('sites-list')
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('sites*') ? 'active' : '' }}" href="{{ route('sites.index') }}">
             <i class="ph-map-pin"></i>
@@ -118,8 +126,8 @@
             <span>Location</span>
         </a>
     </li>
-@endcan
-@canany(['roles-list', 'users-list'])
+@endcan --}}
+@canany(['roles-list', 'permissions-list', 'users-list'])
     <li class="nav-item-header">
         <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Access Management</div>
         <i class="ph-dots-three sidebar-resize-show"></i>
@@ -130,6 +138,14 @@
         <a class="nav-link {{ request()->routeIs('roles*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
             <i class="ph-atom"></i>
             <span>Roles</span>
+        </a>
+    </li>
+@endcan
+@can('permissions-list')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('permissions*') ? 'active' : '' }}" href="{{ route('permissions.index') }}">
+            <i class="ph-atom"></i>
+            <span>Permissions</span>
         </a>
     </li>
 @endcan

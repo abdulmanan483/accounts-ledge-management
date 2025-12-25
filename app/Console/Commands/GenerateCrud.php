@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Console\Commands;
 
 use Exception;
@@ -24,9 +25,11 @@ class GenerateCrud extends GeneratorCommand
      * @var string
      */
     protected $signature = 'generate:crud
-                            {name : Table name}
-                            {stack : The development stack that should be installed (bootstrap,tailwind,livewire,api)}
-                            {--route= : Custom route name}';
+    {name : Table name}
+    {stack : The development stack that should be installed (bootstrap,tailwind,livewire,api)}
+    {--route= : Custom route name}
+    {--repo : Generate repository and interface}';
+
 
     /**
      * The console command description.
@@ -64,7 +67,10 @@ class GenerateCrud extends GeneratorCommand
             ->buildModel()
             ->buildViews()
             ->writeRoute();
-
+        if ($this->option('repo')) {
+            $this->buildInterface();
+            $this->buildRepository();
+        }
         $this->info('Created Successfully.');
 
         return true;
@@ -144,8 +150,8 @@ class GenerateCrud extends GeneratorCommand
         }
 
         $controllerPath = $this->options['stack'] == 'api'
-        ? $this->_getApiControllerPath($this->name)
-        : $this->_getControllerPath($this->name);
+            ? $this->_getApiControllerPath($this->name)
+            : $this->_getControllerPath($this->name);
 
         if ($this->files->exists($controllerPath) && $this->ask('Already exist Controller. Do you want overwrite (y/n)?', 'y') == 'n') {
             return $this;
@@ -160,9 +166,16 @@ class GenerateCrud extends GeneratorCommand
             default => ''
         };
 
+        $controllerStub = $this->option('repo')
+            ? $stubFolder . 'ControllerRepo'
+            : $stubFolder . 'Controller';
+
         $controllerTemplate = str_replace(
-            array_keys($replace), array_values($replace), $this->getStub($stubFolder . 'Controller')
+            array_keys($replace),
+            array_values($replace),
+            $this->getStub($controllerStub)
         );
+
 
         $this->write($controllerPath, $controllerTemplate);
 
@@ -170,7 +183,9 @@ class GenerateCrud extends GeneratorCommand
             $resourcePath = $this->_getResourcePath($this->name);
 
             $resourceTemplate = str_replace(
-                array_keys($replace), array_values($replace), $this->getStub($stubFolder . 'Resource')
+                array_keys($replace),
+                array_values($replace),
+                $this->getStub($stubFolder . 'Resource')
             );
 
             $this->write($resourcePath, $resourceTemplate);
@@ -190,7 +205,9 @@ class GenerateCrud extends GeneratorCommand
             $componentPath = $this->_getLivewirePath($folder . '/' . $component);
 
             $componentTemplate = str_replace(
-                array_keys($replace), array_values($replace), $this->getStub('livewire/' . $component)
+                array_keys($replace),
+                array_values($replace),
+                $this->getStub('livewire/' . $component)
             );
 
             $this->write($componentPath, $componentTemplate);
@@ -200,7 +217,9 @@ class GenerateCrud extends GeneratorCommand
         $formPath = $this->_getLivewirePath('Forms/' . $this->name . 'Form');
 
         $componentTemplate = str_replace(
-            array_keys($replace), array_values($replace), $this->getStub('livewire/Form')
+            array_keys($replace),
+            array_values($replace),
+            $this->getStub('livewire/Form')
         );
 
         $this->write($formPath, $componentTemplate);
@@ -225,7 +244,9 @@ class GenerateCrud extends GeneratorCommand
         $replace = array_merge($this->buildReplacements(), $this->modelReplacements());
 
         $modelTemplate = str_replace(
-            array_keys($replace), array_values($replace), $this->getStub('Model')
+            array_keys($replace),
+            array_values($replace),
+            $this->getStub('Model')
         );
 
         $this->write($modelPath, $modelTemplate);
@@ -236,7 +257,9 @@ class GenerateCrud extends GeneratorCommand
         $this->info('Creating Request Class ...');
 
         $requestTemplate = str_replace(
-            array_keys($replace), array_values($replace), $this->getStub('Request')
+            array_keys($replace),
+            array_values($replace),
+            $this->getStub('Request')
         );
 
         $this->write($requestPath, $requestTemplate);
@@ -255,7 +278,13 @@ class GenerateCrud extends GeneratorCommand
         if ($this->options['stack'] == 'api') {
             return $this;
         }
+        $viewPath = $this->options['stack'] == 'api'
+            ? $this->_getApiControllerPath($this->name)
+            : $this->_getControllerPath($this->name);
 
+        if ($this->files->exists($viewPath) && $this->ask('Already exist View. Do you want overwrite (y/n)?', 'y') == 'n') {
+            return $this;
+        }
         $this->info('Creating Views ...');
 
         $tableHead = "\n";
@@ -281,9 +310,11 @@ class GenerateCrud extends GeneratorCommand
 
         $this->buildLayout();
 
-        foreach (['index', 'create', 'edit', 'form', 'show','actions'] as $view) {
+        foreach (['index', 'create', 'edit', 'form', 'show', 'actions'] as $view) {
             $viewTemplate = str_replace(
-                array_keys($replace), array_values($replace), $this->getStub("views/{$this->options['stack']}/$view")
+                array_keys($replace),
+                array_values($replace),
+                $this->getStub("views/{$this->options['stack']}/$view")
             );
 
             $this->write($this->_getViewPath($view), $viewTemplate);
@@ -305,7 +336,7 @@ class GenerateCrud extends GeneratorCommand
     // CUSTOM FUNCTIONS
     protected function buildReplacements(): array
     {
-        return [
+        $base = [
             '{{layout}}' => $this->layout,
             '{{modelName}}' => $this->name,
             '{{modelNamePluralSnakeLowerCase}}' => Str::plural(Str::lower(Str::snake($this->name))),
@@ -325,6 +356,16 @@ class GenerateCrud extends GeneratorCommand
             '{{modelView}}' => Str::kebab($this->name),
             '{{modelViewFolder}}' => $this->getViewNamespaceFolder(),
         ];
+
+        if ($this->option('repo')) {
+            $base += [
+                '{{interfaceNamespace}}' => 'App\\Interfaces',
+                '{{repositoryNamespace}}' => 'App\\Repositories\\Eloquent',
+                '{{modelInterface}}' => $this->name . 'Interface',
+                '{{repositoryVariable}}' => Str::camel($this->name) . 'Repository',
+            ];
+        }
+        return $base;
     }
 
     /**
@@ -343,7 +384,8 @@ class GenerateCrud extends GeneratorCommand
 
         return $this->makeDirectory(resource_path($path));
     }
-    protected function getViewNamespaceFolder(){
+    protected function getViewNamespaceFolder()
+    {
         // Get last segment
         $lastWord = class_basename($this->controllerNamespace);
 
@@ -351,7 +393,7 @@ class GenerateCrud extends GeneratorCommand
         return Str::singular(Str::lower($lastWord));
     }
 
-     /**
+    /**
      * Make model attributes/replacements.
      *
      * @return array
@@ -374,8 +416,7 @@ class GenerateCrud extends GeneratorCommand
             }
             if (! $column['nullable']) {
                 $rulesArray[$column['name']] = ['required'];
-            }
-            else{
+            } else {
                 $rulesArray[$column['name']] = ['nullable'];
             }
 
@@ -403,7 +444,7 @@ class GenerateCrud extends GeneratorCommand
             $rulesArray = Arr::except($rulesArray, $this->unwantedColumns);
             // Make rulesArray
             foreach ($rulesArray as $col => $rule) {
-                $rules .= "\n\t\t\t'$col' => '".implode('|', $rule)."',";
+                $rules .= "\n\t\t\t'$col' => '" . implode('|', $rule) . "',";
             }
 
             return $rules;
@@ -415,7 +456,7 @@ class GenerateCrud extends GeneratorCommand
 
             // Add quotes to the unwanted columns for fillable
             array_walk($filterColumns, function (&$value) {
-                $value = "'".$value."'";
+                $value = "'" . $value . "'";
             });
 
             // CSV format
@@ -437,5 +478,72 @@ class GenerateCrud extends GeneratorCommand
             '{{livewireFormSetValues}}' => $livewireFormSetValues,
         ];
     }
+    protected function buildInterface(): void
+    {
+        $this->info('Creating Interface ...');
 
+        $path = app_path("Interfaces/{$this->name}Interface.php");
+
+        // Ensure directory exists
+        $this->makeDirectory(dirname($path));
+
+        if ($this->files->exists($path)) {
+            $this->warn('Interface already exists, skipping.');
+            return;
+        }
+        $stubFolder = match ($this->options['stack']) {
+            'api' => 'api/',
+            default => ''
+        };
+
+        $replace = array_merge(
+            $this->buildReplacements(),
+            [
+                '{{interfaceNamespace}}' => 'App\\Interfaces',
+                '{{baseInterface}}'      => 'BaseInterface',
+            ]
+        );
+
+        $content = str_replace(
+            array_keys($replace),
+            array_values($replace),
+            $this->getStub($stubFolder . 'Interface')
+        );
+
+        $this->write($path, $content);
+    }
+    protected function buildRepository(): void
+    {
+        $this->info('Creating Repository ...');
+
+        $path = app_path("Repositories/{$this->name}Repository.php");
+
+        // Ensure directory exists
+        $this->makeDirectory(dirname($path));
+
+        if ($this->files->exists($path)) {
+            $this->warn('Repository already exists, skipping.');
+            return;
+        }
+
+        $replace = array_merge(
+            $this->buildReplacements(),
+            [
+                '{{repositoryNamespace}}' => 'App\\Repositories\\Eloquent',
+                '{{interfaceNamespace}}'  => 'App\\Interfaces',
+                '{{baseRepository}}'      => 'BaseRepository',
+            ]
+        );
+        $stubFolder = match ($this->options['stack']) {
+            'api' => 'api/',
+            default => ''
+        };
+        $content = str_replace(
+            array_keys($replace),
+            array_values($replace),
+            $this->getStub($stubFolder . 'Repository')
+        );
+
+        $this->write($path, $content);
+    }
 }
