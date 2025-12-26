@@ -76,35 +76,3 @@ function cities($dropdown = true, $groupByState = false)
             : $query->cursor();           // Efficiently iterate over large datasets
     });
 }
-
-
-/**
- * Get listing of a resource.
- */
-function sites($dropdown = true)
-{
-    return $dropdown == true ? Site::pluck("name", "id") : Site::get();
-}
-/**
- * Get listing of a resource.
- */
-function floors($dropdown = true)
-{
-    return $dropdown == true ? Floor::pluck("name", "id") : Floor::get();
-}
-
-/**
- * Get listing of a resource.
- */
-function blocks($dropdown = true)
-{
-    return $dropdown == true ? Block::pluck("name", "id") : Block::get();
-}
-
-/**
- * Get listing of a resource.
- */
-function departments($dropdown = true)
-{
-    return $dropdown == true ? Department::pluck("name", "id") : Department::get();
-}

@@ -50,14 +50,10 @@
                     <thead class="thead">
                         <tr>
                             <th>No</th>
-                            <th>Form No.</th>
                             <th>Prof. Pic</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Mobile No.</th>
-                            <th>CNIC</th>
                             <th>Role</th>
-                            <th>Status</th>
                             <th>Active</th>
                             <th class="text-center" style="min-width:110px">Actions</th>
                         </tr>
@@ -66,7 +62,6 @@
                         @foreach ($users as $key => $user)
                             <tr>
                                 <td>{{ ++$key }}</td>
-                                <td>{{ $user->form_no }}</td>
                                 <td>
                                     @if ($user->profile_picture)
                                         {{-- <img src="{{ asset('storage/' . $user->external_profile_pic) }}" alt="Profile Picture"
@@ -79,17 +74,12 @@
                                     @endif
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ $user->mobile_no }}</td>
-                                <td>{{ $user->cnic }}</td>
                                 <td class="text-center">
                                     @if (!empty($user->getRoleNames()))
                                         @foreach ($user->getRoleNames() as $v)
                                             <x-admin.badges.primary :message="$v" />
                                         @endforeach
                                     @endif
-                                </td>
-                                <td><x-admin.statuses.user-approval :status="$user->status" />
-                                    <br />{{ $user->comments }}
                                 </td>
                                 <td><x-admin.statuses.active-badge :status="$user->is_active" /></td>
                                 <td class="text-center">@include('admin.users.actions')</td>

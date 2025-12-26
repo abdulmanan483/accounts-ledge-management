@@ -29,10 +29,6 @@ Route::group(['middleware' => VerifyApiToken::class, 'namespace'=>'App\Http\Cont
 	});
     Route::middleware(['auth:sanctum', VerifyApiToken::class])->group(function () {
         Route::prefix('utilities')->group(function () {
-            Route::get('/sites', [UtilitiesController::class, 'getSites']);
-            Route::get('/floors', [UtilitiesController::class, 'getFloors']);
-            Route::get('/blocks', [UtilitiesController::class, 'getBlocks']);
-            Route::get('/departments', [UtilitiesController::class, 'getDepartments']);
         });
         Route::get('/user-role-permissions', [AuthController::class, 'getRolePermissions']);
     });

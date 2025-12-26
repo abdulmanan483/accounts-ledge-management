@@ -1,5 +1,5 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
+    "$schema": "https: //getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
@@ -9,6 +9,7 @@
         "php": "^8.2",
         "google/apiclient": "^2.18",
         "intervention/image": "^3.11",
+        "jenssegers/agent": "^2.6",
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
@@ -39,7 +40,6 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Libraries/GoogleDriveHelper.php",
             "app/Libraries/DropdownHelper.php",
             "app/Libraries/ResponseHelper.php",
             "app/Libraries/Helper.php"

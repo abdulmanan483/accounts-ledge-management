@@ -2,42 +2,75 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Str;
+
 trait Enums
 {
     /**
-     * Get a formatted list of enum values.
+     * Get all enum values
+     *
+     * @return array
      */
-    public static function getList(): array
+    public static function values(): array
     {
-        $formattedValues = [];
-        foreach (self::cases() as $case) {
-            $formattedValues[$case->value] = [
-                'name' => $case->name,
-                'value' => $case->value,
-                'label' => $case->label(),
-            ];
-        }
-        return $formattedValues;
+        // PHP 8.1+ native enums support `cases()`
+        return array_map(fn($case) => $case->value, self::cases());
     }
 
     /**
-     * Convert enum name to a human-readable label dynamically.
+     * Get all enum labels (case names)
+     *
+     * @return array
      */
-    public function label(): string
+    public static function labels(): array
     {
-        return ucwords(strtolower(str_replace('_', ' ', $this->name)));
+        return array_map(fn($case) => $case->name, self::cases());
     }
 
     /**
-     * Get an enum instance from a given value.
+     * Get all enum options as [label => value]
+     *
+     * @return array
      */
-    public static function fromValue(int|string $value): ?self
+    public static function options(): array
+    {
+        return array_column(self::cases(), 'value', 'name');
+    }
+
+    /**
+     * Get the enum case name from a value
+     *
+     * @param mixed $value
+     * @return string|null
+     */
+    public static function labelFromValue(mixed $value): ?string
     {
         foreach (self::cases() as $case) {
             if ($case->value === $value) {
-                return $case;
+                return Str::title($case->name);
             }
         }
+
         return null;
+    }
+
+    /**
+     * Get array of objects with value and name pairs
+     *
+     * @return array<int, object{value: mixed, name: string}>
+     */
+    public static function toValueNameObjects(): array
+    {
+        return array_map(
+            fn($case) => (object)[
+                'value' => $case->value,
+                'name' => Str::title($case->name),
+            ],
+            self::cases()
+        );
+    }
+    public function label(): string
+    {
+        return ucwords(strtolower(str_replace('_', ' ', $this->name)));
     }
 }

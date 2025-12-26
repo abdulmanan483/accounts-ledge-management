@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->text('image')->after('email')->nullable();
+            $table->text('profile_picture')->after('email')->nullable();
             $table->boolean('is_active')->after('remember_token')->default(true);
         });
     }

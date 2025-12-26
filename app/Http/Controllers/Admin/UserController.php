@@ -3,107 +3,127 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use Illuminate\Http\RedirectResponse;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
-use App\Http\Requests\Admin\UserRequest;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
-use App\Interfaces\UserInterface;
+use Illuminate\Support\Arr;
 
 class UserController extends Controller
 {
-    protected UserInterface $user;
+    protected UserRepository $userRepo;
 
-    /**
-     * Constructor.
-     *
-     * @param UserInterface $user
-     */
-    function __construct(UserInterface $user)
+    public function __construct(UserRepository $userRepo)
     {
-        $this->user = $user;
-
         $this->middleware('permission:users-list',  ['only' => ['index']]);
         $this->middleware('permission:users-view',  ['only' => ['show']]);
         $this->middleware('permission:users-create',['only' => ['create','store']]);
         $this->middleware('permission:users-edit',  ['only' => ['edit','update']]);
         $this->middleware('permission:users-delete',['only' => ['destroy']]);
+
+        $this->userRepo = $userRepo;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
         $pagination_mode = $request->input('pagination_mode','client');
         if($pagination_mode == 'client'){
-            $users = $this->user->all();
-            return view('admin.user.index', compact('users'));
+            $request->merge([
+                'with' => ['roles', 'media'],
+            ]);
+            $users = $this->userRepo->all();
+            return view('admin.users.index', compact('users'));
         }
-        $users = $this->user->paginate();
+        $users = $this->userRepo->paginate();
 
-        return view('admin.user.index', compact('users'))
+        return view('admin.users.index', compact('users'))
             ->with('i', ($request->input('page', 1) - 1) * $users->perPage());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(): View
+    public function create()
     {
-        $user = new User();
-
-        return view('admin.user.create', compact('user'));
+        $user = $this->userRepo->model; // empty model instance
+        return view('admin.users.create', compact('user'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(UserRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        $this->user->create($request->validated());
+        $request->validate([
+            'name'             => 'required',
+            'email'            => 'required|email|unique:users,email',
+            'password'         => 'required|same:confirm_password',
+            'confirm_password' => 'required|same:password',
+            'roles'            => 'required',
+        ]);
 
-        return Redirect::route('users.index')
-            ->with('success', 'User created successfully.');
+        $this->userRepo->create($request->all());
+
+        return redirect()->route('users.index')->with('success', 'User created successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id): View
+    public function show($id)
     {
-        $user = $this->user->find($id);
-
-        return view('admin.user.show', compact('user'));
+        $user = $this->userRepo->find($id);
+        return view('admin.users.show', compact('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id): View
+    public function edit($id)
     {
-        $user = $this->user->find($id);
-
-        return view('admin.user.edit', compact('user'));
+        $user     = $this->userRepo->find($id);
+        $userRole = $user->roles->pluck('name', 'id')->all();
+        return view('admin.users.edit', compact('user', 'userRole'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UserRequest $request, User $user): RedirectResponse
+    public function update(Request $request, $id)
     {
-        $this->user->update($user, $request->validated());
+        $request->validate([
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users,email,' . $id,
+            'roles'    => 'required|array',
+            'roles.*'  => 'integer|exists:roles,id'
+        ]);
 
-        return Redirect::route('users.index')
-            ->with('success', 'User updated successfully');
+        $this->userRepo->update($id, $request->all());
+
+        return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy($id)
     {
-        $this->user->delete($id);
+        if (! $this->userRepo->safeDelete($id, auth()->id())) {
+            return redirect()->back()->with('warning', 'You cannot delete this user.');
+        }
 
-        return Redirect::route('users.index')
-            ->with('success', 'User deleted successfully');
+        return redirect()->route('users.index')->with('success', 'User deleted successfully');
+    }
+
+    public function profileEdit()
+    {
+        return view('admin.users.profile');
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        $request->validate([
+            'name'             => 'required',
+            'email'            => 'required|email|unique:users,email,' . auth()->id(),
+            'old_password'     => 'nullable|required_with:new_password',
+            'new_password'     => 'nullable|min:8|max:12',
+            'confirm_password' => 'nullable|min:8|max:12|required_with:new_password|same:new_password',
+        ]);
+
+        $this->userRepo->updateProfile(auth()->id(), $request->all());
+
+        return redirect()->back()->with('success', 'Profile updated successfully');
+    }
+
+    public function checkEmail(Request $request)
+    {
+        $available = $this->userRepo->isEmailAvailable($request->email, $request->id ?? null);
+        echo $available ? "true" : "false";
+    }
+
+    public function checkPassword(Request $request)
+    {
+        $valid = $this->userRepo->verifyPassword($request->id, $request->old_password);
+        echo $valid ? "true" : "false";
     }
 }

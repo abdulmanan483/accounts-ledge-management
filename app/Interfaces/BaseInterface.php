@@ -35,7 +35,7 @@ interface BaseInterface
      * @param int $id
      * @return mixed
      */
-    public function find(int $id);
+    public function find(int $id, $trash = '');
 
     /**
      * Find a record by a specific key-value pair.
@@ -43,7 +43,7 @@ interface BaseInterface
      * @param int $id
      * @return mixed
      */
-    public function findByKey(string $key, $value);
+    public function findByKey(string $key, $value, $trash = '');
 
     /**
      * Fetch all records.
