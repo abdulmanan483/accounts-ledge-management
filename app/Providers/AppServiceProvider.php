@@ -7,7 +7,9 @@ use App\Interfaces\CountryInterface;
 use App\Interfaces\StateInterface;
 use App\Interfaces\UserInterface;
 use App\Models\BaseModel;
+use App\Models\User;
 use App\Observers\BaseObserver;
+use App\Observers\UserObserver;
 use App\Repositories\CityRepository;
 use App\Repositories\CountryRepository;
 use App\Repositories\StateRepository;
@@ -34,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         BaseModel::observe(BaseObserver::class);
+        User::observe(UserObserver::class);
         Blueprint::macro('userTracking', function () {
             $this->unsignedBigInteger('created_by')->nullable();
             $this->unsignedBigInteger('updated_by')->nullable();
