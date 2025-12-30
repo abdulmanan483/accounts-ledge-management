@@ -12,4 +12,12 @@ class UserRepository extends BaseRepository implements UserInterface
     {
         parent::__construct($model);
     }
+    public function isEmailAvailable(string $email, ?int $ignoreId = null): bool
+    {
+        $query = $this->model->where('email', $email);
+        if ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
+        }
+        return !$query->exists();
+    }
 }

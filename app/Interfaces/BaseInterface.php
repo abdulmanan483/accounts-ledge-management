@@ -2,6 +2,8 @@
 
 namespace App\Interfaces;
 
+use Illuminate\Database\Eloquent\Model;
+
 interface BaseInterface
 {
     /**
@@ -77,4 +79,6 @@ interface BaseInterface
      * @return mixed
      */
     public function searchOrFilter($request, $export = false);
+    public function new(): Model;
+
 }

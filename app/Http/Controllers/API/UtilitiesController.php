@@ -9,4 +9,10 @@ use App\Models\Site;
 
 class UtilitiesController extends BaseController
 {
+    public function cities($country_id)
+    {
+        $cities = cities($country_id);
+        return sendResponse($cities, 'Cities retrieved successfully.');
+
+    }
 }

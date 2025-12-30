@@ -16,6 +16,10 @@ abstract class BaseRepository implements BaseInterface
     {
         $this->model = $model;
     }
+    public function new(): Model
+    {
+        return $this->model->newInstance();
+    }
 
     /**
      * Generate cache key with version
@@ -112,12 +116,16 @@ abstract class BaseRepository implements BaseInterface
         return Cache::remember($this->cacheKey('paginate', $params), $this->cacheTime * 60, fn() => $this->getter(null, true));
     }
 
-    public function find(int $id, $trash = '')
+    public function find(int $id, $with = null, $trash = '')
     {
         return Cache::remember($this->cacheKey('find', ['id' => $id, 'trash' => $trash]), $this->cacheTime * 60, function () use ($id, $trash) {
             $query = $this->model->query();
             if ($trash === 'with') $query->withTrashed();
             elseif ($trash === 'only') $query->onlyTrashed();
+            // Eager load relationships
+            if (isset($with) && is_array($with)) {
+                $query->with($with);
+            }
             return $query->findOrFail($id);
         });
     }

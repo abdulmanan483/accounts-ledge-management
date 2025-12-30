@@ -54,25 +54,33 @@ function state($state_id)
 /**
  * Get listing of a resource with cache and cursor.
  */
-function cities($dropdown = true, $groupByState = false)
-{
-    $cacheKey = $dropdown
-        ? ($groupByState ? 'cities_grouped_by_state' : 'cities_dropdown')
-        : 'cities_full_list';
+function cities(
+    int $country_id,
+    bool $dropdown = true,
+    bool $groupByState = false,
+) {
 
-    return cache()->remember($cacheKey, now()->addHours(1), function () use ($dropdown, $groupByState) {
-        $query = City::with('state')->where('country_id', settings('default_country_id'));
+    $cacheKeyParts = [
+        'country' => $country_id,
+        'type'    => $dropdown ? 'dropdown' : 'full',
+        'group'   => $groupByState ? 'state' : 'none',
+    ];
+
+    $cacheKey = 'cities_' . implode('_', $cacheKeyParts);
+
+    return cache()->remember($cacheKey, now()->addHours(1), function () use ($country_id, $dropdown, $groupByState) {
+        $query = City::with('state')
+            ->where('country_id', $country_id);
 
         if ($groupByState) {
-            // Group cities by their state name for dropdown
             return $query->get()
-                ->groupBy(fn($city) => $city->state->name ?? 'Unknown State')
-                ->map(fn($group) => $group->pluck('name', 'id'))
+                ->groupBy(fn ($city) => $city->state->name ?? 'Unknown State')
+                ->map(fn ($group) => $group->pluck('name', 'id'))
                 ->toArray();
         }
 
         return $dropdown
-            ? $query->pluck('name', 'id') // Simple key-value pair for dropdown
-            : $query->cursor();           // Efficiently iterate over large datasets
+            ? $query->pluck('name', 'id')
+            : $query->cursor();
     });
 }

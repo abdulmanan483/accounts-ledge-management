@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
-class UserRepository extends BaseRepository implements UserInterface
+class UserOldRepository extends BaseRepository implements UserInterface
 {
     public function __construct(User $model)
     {

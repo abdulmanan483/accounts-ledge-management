@@ -28,9 +28,10 @@ Route::group(['middleware' => VerifyApiToken::class, 'namespace'=>'App\Http\Cont
         Route::post('reset_password',   'resetPass' 	);
 	});
     Route::middleware(['auth:sanctum', VerifyApiToken::class])->group(function () {
-        Route::prefix('utilities')->group(function () {
-        });
         Route::get('/user-role-permissions', [AuthController::class, 'getRolePermissions']);
     });
 
+});
+Route::prefix('utilities')->group(function () {
+    Route::get('cities/{country_id}',          [UtilitiesController::class, 'cities']);
 });

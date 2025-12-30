@@ -104,18 +104,6 @@ class User extends Authenticatable implements Auditable
     }
 
     /**
-     * Handle image upload.
-     */
-    public function setImageAttribute($image)
-    {
-        if ($image) {
-            $this->attributes['image'] = uploadFile($image, 'profile', '100', '100');
-        } else {
-            $this->attributes['image'] = null;
-        }
-    }
-
-    /**
      * Return full image URL.
      */
     public function getImageAttribute($image)
@@ -138,13 +126,5 @@ class User extends Authenticatable implements Auditable
     public function scopeActive($query)
     {
         return $query->where('is_active', 1);
-    }
-
-    /**
-     * Relationships with media files.
-     */
-    public function media()
-    {
-        return $this->morphMany(\App\Models\Media::class, 'mediable');
     }
 }
