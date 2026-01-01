@@ -3,36 +3,47 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Media;
+use App\Models\Medium;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Http\Requests\Admin\MediaRequest;
+use App\Http\Requests\Admin\MediumRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Interfaces\MediumInterface;
 
 class MediaController extends Controller
 {
-     /**
+    protected MediumInterface $medium;
+
+    /**
      * Constructor.
      *
-     * @return \Illuminate\Http\Response
+     * @param MediumInterface $medium
      */
-    function __construct()
+    function __construct(MediumInterface $medium)
     {
+        $this->medium = $medium;
+
         $this->middleware('permission:media-list',  ['only' => ['index']]);
         $this->middleware('permission:media-view',  ['only' => ['show']]);
         $this->middleware('permission:media-create',['only' => ['create','store']]);
         $this->middleware('permission:media-edit',  ['only' => ['edit','update']]);
         $this->middleware('permission:media-delete',['only' => ['destroy']]);
     }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): View
     {
-        $media = Media::paginate();
+        $pagination_mode = $request->input('pagination_mode','client');
+        if($pagination_mode == 'client'){
+            $media = $this->medium->all();
+            return view('admin.medium.index', compact('media'));
+        }
+        $media = $this->medium->paginate();
 
-        return view('admin.media.index', compact('media'))
+        return view('admin.medium.index', compact('media'))
             ->with('i', ($request->input('page', 1) - 1) * $media->perPage());
     }
 
@@ -41,17 +52,17 @@ class MediaController extends Controller
      */
     public function create(): View
     {
-        $medium = new Media();
+        $medium = new Medium();
 
-        return view('admin.media.create', compact('medium'));
+        return view('admin.medium.create', compact('medium'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(MediaRequest $request): RedirectResponse
+    public function store(MediumRequest $request): RedirectResponse
     {
-        Media::create($request->validated());
+        $this->medium->create($request->validated());
 
         return Redirect::route('media.index')
             ->with('success', 'Medium created successfully.');
@@ -62,9 +73,9 @@ class MediaController extends Controller
      */
     public function show($id): View
     {
-        $medium = Media::find($id);
+        $medium = $this->medium->find($id);
 
-        return view('admin.media.show', compact('medium'));
+        return view('admin.medium.show', compact('medium'));
     }
 
     /**
@@ -72,17 +83,17 @@ class MediaController extends Controller
      */
     public function edit($id): View
     {
-        $medium = Media::find($id);
+        $medium = $this->medium->find($id);
 
-        return view('admin.media.edit', compact('medium'));
+        return view('admin.medium.edit', compact('medium'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(MediaRequest $request, Media $media): RedirectResponse
+    public function update(MediumRequest $request, Medium $medium): RedirectResponse
     {
-        $media->update($request->validated());
+        $this->medium->update($medium, $request->validated());
 
         return Redirect::route('media.index')
             ->with('success', 'Medium updated successfully');
@@ -90,7 +101,7 @@ class MediaController extends Controller
 
     public function destroy($id): RedirectResponse
     {
-        Media::find($id)->delete();
+        $this->medium->delete($id);
 
         return Redirect::route('media.index')
             ->with('success', 'Medium deleted successfully');

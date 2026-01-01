@@ -8,14 +8,14 @@
         <span>Dashboard</span>
     </a>
 </li>
-{{-- @can('media-list')
-<li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('media') ? 'active' : '' }}" href="{{ route('media.index') }}">
-        <i class="ph-files"></i>
-        <span>Media</span>
-    </a>
-</li>
-@endcan --}}
+@can('media-list')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('media') ? 'active' : '' }}" href="{{ route('media.index') }}">
+            <i class="ph-files"></i>
+            <span>Media</span>
+        </a>
+    </li>
+@endcan
 {{-- @can('participants-list')
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('participants.*') ? 'active' : '' }}"
@@ -56,12 +56,12 @@
     </li>
 @endcanany
 @can('countries-list')
-<li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('countries*') ? 'active' : ''}}" href="{{ route('countries.index') }}">
-        <i class="ph-map-pin"></i>
-        <span>Countries</span>
-    </a>
-</li>
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('countries*') ? 'active' : ''}}" href="{{ route('countries.index') }}">
+            <i class="ph-map-pin"></i>
+            <span>Countries</span>
+        </a>
+    </li>
 @endcan
 {{-- @can('provinces-list')
 <li class="nav-item">
@@ -143,7 +143,8 @@
 @endcan
 @can('permissions-list')
     <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('permissions*') ? 'active' : '' }}" href="{{ route('permissions.index') }}">
+        <a class="nav-link {{ request()->routeIs('permissions*') ? 'active' : '' }}"
+           href="{{ route('permissions.index') }}">
             <i class="ph-atom"></i>
             <span>Permissions</span>
         </a>
@@ -166,7 +167,7 @@
 @can('audits-list')
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('notifications*') ? 'active' : '' }}"
-            href="{{ route('notifications.index') }}">
+           href="{{ route('notifications.index') }}">
             <i class="ph-bell"></i>
             <span>Notifications</span>
         </a>
@@ -182,7 +183,8 @@
 @endcan
 @can('logs-list')
     <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('logs*') ? 'active' : '' }}" href="{{ route('logs') }}" target="_blank">
+        <a class="nav-link {{ request()->routeIs('logs*') ? 'active' : '' }}" href="{{ route('logs') }}"
+           target="_blank">
             <i class="ph-bug"></i>
             <span>Errors</span>
         </a>

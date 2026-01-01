@@ -34,7 +34,12 @@ class Medium extends Model implements Auditable
 
     use \OwenIt\Auditing\Auditable;
     protected $perPage = 20;
-
+    protected function casts(): array
+    {
+        return [
+            'type' => \App\Enums\Generic\MediaType::class,
+        ];
+    }
     /**
      * The attributes that are mass assignable.
      *

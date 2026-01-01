@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Interfaces\CityInterface;
 use App\Interfaces\CountryInterface;
+use App\Interfaces\MediumInterface;
 use App\Interfaces\StateInterface;
 use App\Interfaces\UserInterface;
 use App\Models\BaseModel;
@@ -12,6 +13,7 @@ use App\Observers\BaseObserver;
 use App\Observers\UserObserver;
 use App\Repositories\CityRepository;
 use App\Repositories\CountryRepository;
+use App\Repositories\MediumRepository;
 use App\Repositories\StateRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Schema\Blueprint;
@@ -28,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(StateInterface::class,StateRepository::class);
         $this->app->bind(CityInterface::class,CityRepository::class);
         $this->app->bind(UserInterface::class,UserRepository::class);
+        $this->app->bind(MediumInterface::class,MediumRepository::class);
     }
 
     /**
