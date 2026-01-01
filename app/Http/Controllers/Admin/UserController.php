@@ -40,7 +40,7 @@ class UserController extends Controller
 
     public function create()
     {
-        $user = $this->userRepo->model; // empty model instance
+        $user = $this->userRepo->new(); // empty model instance
         return view('admin.users.create', compact('user'));
     }
 
@@ -109,8 +109,7 @@ class UserController extends Controller
             'new_password'     => 'nullable|min:8|max:12',
             'confirm_password' => 'nullable|min:8|max:12|required_with:new_password|same:new_password',
         ]);
-
-        $this->userRepo->updateProfile(auth()->id(), $request->all());
+        $this->userRepo->update(auth()->id(), $request->all());
 
         return redirect()->back()->with('success', 'Profile updated successfully');
     }

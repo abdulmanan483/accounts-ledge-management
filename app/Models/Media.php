@@ -38,7 +38,7 @@ class Media extends BaseModel
     protected function casts(): array
     {
         return [
-            'type' => MediaType::class,
+            'type' => \App\Enums\Generic\MediaType::class,
         ];
     }
  /**

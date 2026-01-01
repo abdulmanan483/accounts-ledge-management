@@ -12,7 +12,10 @@ class SecureFileController extends Controller
 {
     public function show(Request $request,$file_path)
     {
-        $file_path = Crypt::decryptString(urldecode($file_path));
+        $lastDotPos = strrpos($file_path, '.');
+        $encrypted = $lastDotPos !== false ? substr($file_path, 0, $lastDotPos) : $file_path;
+
+        $file_path = Crypt::decryptString(urldecode($encrypted));
         // Ensure user is authenticated
         if (!Auth::check()) {
             abort(403, 'Unauthorized access');

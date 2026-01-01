@@ -3,7 +3,7 @@
 <ul id="sidebarnav">
     <li class="user-pro">
         <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-            <img src="{{ asset(Auth::user()->image) }}" alt="user-img" class="img-circle">
+            <img src="{{ secure_file_url(auth()->user()->profile_picture) }}" alt="user-img" class="img-circle">
             <span class="hide-menu">{{ Auth::user()->name }}</span>
         </a>
         <ul aria-expanded="false" class="collapse">

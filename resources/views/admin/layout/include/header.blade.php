@@ -164,7 +164,7 @@
         </li>
         <li class="nav-item dropdown u-pro">
             <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="{{ asset(Auth::user()->image) }}" alt="user" class=""> 
+                <img src="{{ secure_file_url(auth()->user()->profile_picture) }}" alt="user" class="">
                 <span class="hidden-md-down">{{ Auth::user()->name }} &nbsp;<i class="fa fa-angle-down"></i></span> 
             </a>
             <div class="dropdown-menu dropdown-menu-end animated flipInY">

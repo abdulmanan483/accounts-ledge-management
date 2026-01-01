@@ -53,9 +53,9 @@
                         </div>
                     </div>
                     <div class="col-4 form-group">
-                        {{ html()->label('Image')->for('image') }}
-                        {{ html()->file('image')->class('form-control dropify' . ($errors->has('image') ? ' is-invalid' : ''))->attribute('accept', 'image/png,image/jpg,image/jpeg')->attribute('data-default-file', auth()->user()->image)->attribute('data-height', '200') }}
-                        {!! $errors->first('image', '<div class="invalid-feedback">:message</div>') !!}
+                        {{ html()->label('Image')->for('profile_picture') }}
+                        {{ html()->file('profile_picture')->class('form-control dropify' . ($errors->has('profile_picture') ? ' is-invalid' : ''))->attribute('accept', 'image/png,image/jpg,image/jpeg')->attribute('data-default-file', secure_file_url(auth()->user()->profile_picture))->attribute('data-height', '200') }}
+                        {!! $errors->first('profile_picture', '<div class="invalid-feedback">:message</div>') !!}
                     </div>
                     <div class="col-md-12 d-flex justify-content-end align-items-center mt-3">
                         {{ html()->button('Submit')->class('btn btn-primary ms-3')->attribute('type', 'submit')->attribute('onclick', 'this.form.submit()') }}

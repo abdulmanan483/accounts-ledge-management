@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+
 class MediumRepository extends BaseRepository implements MediumInterface
 {
     public function __construct(Media $model)
@@ -20,8 +21,13 @@ class MediumRepository extends BaseRepository implements MediumInterface
     /**
      * Upload a file and save as Media
      */
-    public function uploadMedia(UploadedFile|string $file, string $disk = 'public', string $directory = 'uploads', int $quality = 70, ?string $newFileName = null): ?Media
-    {
+    public function uploadMedia(
+        UploadedFile|string $file,
+        string $disk = 'public',
+        string $directory = 'uploads',
+        int $quality = 70,
+        ?string $newFileName = null
+    ): ?Media {
         try {
             $directory = rtrim($directory, '/');
             if (!Storage::disk($disk)->exists($directory)) {
@@ -53,7 +59,6 @@ class MediumRepository extends BaseRepository implements MediumInterface
 
                 if (str_starts_with($mimeType, 'image') && !in_array($originalExtension, ['heic', 'heif'])) {
                     $manager->read($file->getRealPath())->toJpeg()->save($fullPath);
-                    // $manager->make($file->getRealPath())->encode('jpg', $quality)->save($fullPath);
                     $mimeType = 'image/jpeg';
                     $originalExtension = 'jpg';
                 } else {
@@ -66,15 +71,14 @@ class MediumRepository extends BaseRepository implements MediumInterface
             }
 
             // Save DB record
-            $media = $this->model->create([
-                'file_name'     => $newFileName,
-                'file_path'     => $filePath,
-                'mime_type'     => $mimeType ?? null,
-                'file_size'     => $fileSize ?? 0,
-                'created_by'    => auth()->id(),
+            return $this->model->create([
+                'file_name'  => $newFileName,
+                'file_path'  => $filePath,
+                'mime_type'  => $mimeType ?? null,
+                'file_size'  => $fileSize ?? 0,
+                'created_by' => auth()->id(),
             ]);
 
-            return $media;
         } catch (\Throwable $e) {
             \Log::error('Media upload failed', ['error' => $e->getMessage()]);
             return null;

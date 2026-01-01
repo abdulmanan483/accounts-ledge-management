@@ -1,89 +1,60 @@
 <?php
+
 namespace App\Traits;
 
-use App\Enums\Media\MediaType;
+use App\Enums\Generic\MediaType;
 use App\Models\Media;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 trait Uploadable
 {
     /**
-     * Upload media file(s) and create a record in the media table.
+     * Upload media for this model and replace old one if exists (per type)
      *
-     * @param array|\Illuminate\Http\UploadedFile|string $files
-     * @param string $path
-     * @param string $disk ('public' or 'private')
-     * @param string $type
-     * @return array|Media|null
+     * @param UploadedFile|string $file
+     * @param string $type Media type (enum: profile_picture, cnic_front, cnic_back, etc)
+     * @param string $path Upload path
+     * @param string $disk Storage disk
+     * @param int $quality Image quality
+     * @return Media|null
      */
-    public function uploadMedia(array|string|\Illuminate\Http\UploadedFile $files, string $path = 'uploads', string $disk = 'public', int $quality = 70, ?string $newFileName = null )
-    {
-        $uploadedMedia = [];
+    public function uploadMedia(
+        UploadedFile|string $file,
+        MediaType $type,
+        string $path,
+        string $disk = 'public',
+        int $quality = 70
+    ): ?Media {
 
-        // Normalize to array
-        if (!is_array($files)) {
-            $files = [$files];
+        $repo = app(\App\Repositories\MediumRepository::class);
+
+        // 1️⃣ Find existing media of this type for this model
+        $existing = $this->media()->where('type', $type)->first();
+
+        // 2️⃣ Upload new media using your existing repo logic
+        $newMedia = $repo->uploadMedia($file, $disk, $path, $quality);
+
+        if (! $newMedia) return null;
+
+        // 3️⃣ Delete old media if exists
+        if ($existing) {
+            if (Storage::disk($disk)->exists($existing->file_path)) {
+                Storage::disk($disk)->delete($existing->file_path);
+            }
+            $existing->delete();
         }
 
-        foreach ($files as $file) {
-            $repo = app(\App\Repositories\MediumRepository::class);
-            $media = $repo->uploadMedia($file, $disk, $path, $quality,$newFileName);
-            // if ($media) {
-                // $media->type = $type;
-                // $media->save();
-                $uploadedMedia[] = $media;
-            // }
-        }
+        // 4️⃣ Attach new media to this model
+        $newMedia->mediable()->associate($this);
+        $newMedia->type = $type;
+        $newMedia->save();
 
-        // Return single Media if only one file uploaded
-        return count($uploadedMedia) === 1 ? $uploadedMedia[0] : $uploadedMedia;
+        return $newMedia;
     }
 
     /**
-     * Delete media file and remove the record from the DB.
-     *
-     * @param int|Media $media
-     * @param string $disk
-     * @return bool
-     */
-    public function deleteMedia($media, string $disk = 'public'): bool
-    {
-        if (is_int($media)) {
-            $media = $this->media()->find($media);
-        }
-
-        if (! $media) return false;
-
-        // Delete file from storage
-        if (Storage::disk($disk)->exists($media->file_path)) {
-            Storage::disk($disk)->delete($media->file_path);
-        }
-
-        return $media->delete();
-    }
-
-    /**
-     * Get full media URL.
-     *
-     * @param string|Media $media
-     * @param string $disk
-     * @return string|null
-     */
-    public function getMediaUrl($media, string $disk = 'public'): ?string
-    {
-        $filePath = $media instanceof Media ? $media->file_path : $media;
-
-        if (! $filePath) return null;
-
-        if (Storage::disk($disk)->exists($filePath)) {
-            return Storage::disk($disk)->url($filePath);
-        }
-
-        return null;
-    }
-
-    /**
-     * Relationship: A model can have multiple media files.
+     * Polymorphic media relation
      */
     public function media()
     {
