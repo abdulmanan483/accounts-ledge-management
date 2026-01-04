@@ -13,6 +13,52 @@ class UserRepository extends BaseRepository implements UserInterface
     {
         parent::__construct($model);
     }
+
+    /**
+     * Create a new user with optional roles and file uploads.
+     */
+    public function create(array $data): User
+    {
+        $user = $this->model->newInstance();
+        // File uploads
+        $file_paths = [
+            'profile_picture' => config('constants.profile_picture_path'),
+        ];
+
+        foreach ($file_paths as $field => $path) {
+            if (!empty($data[$field])) {
+                switch ($field) {
+                    case 'profile_picture':
+                        $type = MediaType::PROFILE_PICTURE;
+                        break;
+                    default:
+                        $type = MediaType::DEFAULT;
+                        break;
+                }
+                $media = $user->uploadMedia(
+                    $data[$field],
+                    $type,
+                    $path,
+                    'local',
+                    70
+                );
+
+                if ($media && isset($media->file_path)) {
+                    $data[$field] = $media->file_path;
+                }
+            }
+        }
+
+        // Create user
+        $user->fill($data)->save();
+
+        // Attach roles if provided
+        if (!empty($data['roles'])) {
+            $user->roles()->sync($data['roles']);
+        }
+
+        return $user;
+    }
     public function update(int $id, array $data): User
     {
         $user = $this->find($id);
