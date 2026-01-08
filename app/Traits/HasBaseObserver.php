@@ -2,41 +2,58 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Facades\Cache;
+use App\Helpers\CacheManager;
+use Illuminate\Database\Eloquent\Model;
 
 trait HasBaseObserver
 {
-    protected function clearCache($model): void
+    /**
+     * Clear caches for a model via CacheManager on CRUD events
+     * @param Model $model
+     * @param string|null $task Optionally specify a task to clear (getter, findBy, search)
+     * @param array $params Optionally specify params to clear specific cache
+     */
+    protected function clearCache(Model $model, string $task = null, array $params = []): void
     {
-        $modelName  = class_basename($model);
-        $versionKey = "{$modelName}.cache_version";
+        // Skip if caching disabled
+        if (!$model::isCacheEnabled()) return;
 
-        $version = Cache::get($versionKey, 1);
-        Cache::put($versionKey, $version + 1, 60 * 24);
+        $cacheManager = new CacheManager($model);
+
+        // Clear caches
+        $cacheManager->clear($task, $params);
     }
 
-    public function created($model): void
+    // ------------------------------
+    // CRUD Event Hooks
+    // ------------------------------
+    public function created(Model $model): void
     {
+        // Clear all caches for the model on create
         $this->clearCache($model);
     }
 
-    public function updated($model): void
+    public function updated(Model $model): void
     {
+        // Clear all caches for the model on update
         $this->clearCache($model);
     }
 
-    public function deleted($model): void
+    public function deleted(Model $model): void
     {
+        // Clear all caches for the model on delete
         $this->clearCache($model);
     }
 
-    public function restored($model): void
+    public function restored(Model $model): void
     {
+        // Clear all caches for the model on restore
         $this->clearCache($model);
     }
 
-    public function forceDeleted($model): void
+    public function forceDeleted(Model $model): void
     {
+        // Clear all caches for the model on force delete
         $this->clearCache($model);
     }
 }

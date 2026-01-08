@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        BaseModel::observe(BaseObserver::class);
+        // BaseModel::observe(BaseObserver::class);
         User::observe(UserObserver::class);
         Blueprint::macro('userTracking', function () {
             $this->unsignedBigInteger('created_by')->nullable();

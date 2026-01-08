@@ -21,9 +21,9 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
-class Country extends Model implements Auditable
+class Country extends BaseModel implements Auditable
 {
-    
+
     use \OwenIt\Auditing\Auditable;
     protected $perPage = 20;
 

@@ -30,22 +30,14 @@ interface BaseInterface
      * @return bool
      */
     public function delete(int $id): bool;
-
-    /**
-     * Find a record by its ID.
-     *
-     * @param int $id
-     * @return mixed
-     */
-    public function find(int $id, $trash = '');
-
     /**
      * Find a record by a specific key-value pair.
      *
      * @param int $id
      * @return mixed
      */
-    public function findByKey(string $key, $value, $trash = '');
+    public function find(int $id, $with = null, $trash = '');
+    public function findBy(string $key, $value, $with = null, $trash = '');
 
     /**
      * Fetch all records.
@@ -78,7 +70,7 @@ interface BaseInterface
      * @param bool $export
      * @return mixed
      */
-    public function searchOrFilter($request, $export = false);
+    public function searchOrFilter($request);
     public function new(): Model;
-
+    public function count($request);
 }

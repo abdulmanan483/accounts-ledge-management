@@ -2,23 +2,32 @@
 
 namespace App\Traits;
 
+use App\Observers\BaseObserver;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Activitylog\LogOptions;
 
 trait HasBaseModel
 {
     protected static bool $supports_soft_deletes = true;
+    protected static array $columnCache = [];
+    protected static ?bool $cacheEnabled = null;
+    /**
+     * Check if cache is enabled for this model
+     */
+    public static function isCacheEnabled(): bool
+    {
+        // If the trait property is set, use it
+        if (static::$cacheEnabled !== null) {
+            return static::$cacheEnabled;
+        }
+
+        // fallback to global config
+        return config('config.cache_enabled', false);
+    }
 
     protected static function bootHasBaseModel()
     {
         $model = new static;
-
-        /**
-         * Enable / Disable Auditing
-         */
-        if (method_exists($model, 'isAuditable') && ! $model->isAuditable()) {
-            $model->disableAuditing();
-        }
-
         /**
          * Detect soft deletes support
          */
@@ -31,8 +40,9 @@ trait HasBaseModel
             static::deleting(function ($model) {
                 if (
                     auth()->check() &&
-                    Schema::hasColumn($model->getTable(), 'deleted_by')
+                    static::hasColumnCached($model->getTable(), 'deleted_by')
                 ) {
+                    $model->updated_by = auth()->id();
                     $model->deleted_by = auth()->id();
                     $model->saveQuietly();
                 }
@@ -41,7 +51,7 @@ trait HasBaseModel
             static::restoring(function ($model) {
                 if (
                     auth()->check() &&
-                    Schema::hasColumn($model->getTable(), 'deleted_by')
+                    static::hasColumnCached($model->getTable(), 'deleted_by')
                 ) {
                     $model->deleted_by = null;
                 }
@@ -54,7 +64,7 @@ trait HasBaseModel
         static::creating(function ($model) {
             if (
                 auth()->check() &&
-                Schema::hasColumn($model->getTable(), 'created_by')
+                static::hasColumnCached($model->getTable(), 'created_by')
             ) {
                 $model->created_by = auth()->id();
             }
@@ -66,20 +76,47 @@ trait HasBaseModel
         static::updating(function ($model) {
             if (
                 auth()->check() &&
-                Schema::hasColumn($model->getTable(), 'updated_by')
+                static::hasColumnCached($model->getTable(), 'updated_by')
             ) {
                 $model->updated_by = auth()->id();
             }
         });
     }
-
-    /**
-     * Check if auditing is enabled
-     */
-    public function isAuditable(): bool
+    public function getActivitylogOptions(): LogOptions
     {
-        return property_exists($this, 'enable_audit')
-            ? $this->enable_audit
-            : true;
+        $a = LogOptions::defaults()
+            // Use model class name as log name (User, Post, Order, etc.)
+            ->useLogName(class_basename($this))
+
+            // Log all fillable attributes
+            ->logFillable()
+//
+//            // Log only changed attributes
+            ->logOnlyDirty()
+
+            // Prevent empty logs
+            ->dontSubmitEmptyLogs()
+
+            // Custom description per event
+//            ->setDescriptionForEvent(function (string $eventName) {
+//                return sprintf(
+//                    '%s %s',
+//                    class_basename($this),
+//                    $eventName
+//                );
+//            });
+            ->setDescriptionForEvent(function (string $eventName) {
+                if ($eventName === 'deleted' && method_exists($this, 'isForceDeleting') && $this->isForceDeleting()) {
+                    return class_basename($this) . ' force deleted';
+                }
+
+                return class_basename($this) . ' ' . $eventName;
+            });
+        return $a;
+    }
+    protected static function hasColumnCached($table, $column): bool
+    {
+        return static::$columnCache[$table][$column]
+            ??= Schema::hasColumn($table, $column);
     }
 }

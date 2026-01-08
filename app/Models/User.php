@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasBaseModel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,6 +20,7 @@ class User extends Authenticatable implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
     use HasApiTokens, HasFactory, Notifiable, HasRoles, SoftDeletes, Uploadable;
+    use HasBaseModel;
 
     /**
      * Default number of items per page.

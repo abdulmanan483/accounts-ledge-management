@@ -3,33 +3,26 @@
 namespace App\Repositories;
 
 use App\Interfaces\BaseInterface;
+use App\Libraries\CacheManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Cache;
 
 abstract class BaseRepository implements BaseInterface
 {
     protected Model $model;
-    protected int $cacheTime = 60; // minutes
+    protected int $cacheTime = 60; // default minutes
+    protected CacheManager $cacheManager;
 
     public function __construct($model)
     {
         $this->model = $model;
+        $this->cacheTime = config('config.cache_time', 60);
+        $this->cacheManager = new CacheManager($model, $this->cacheTime);
     }
+
     public function new(): Model
     {
         return $this->model->newInstance();
-    }
-
-    /**
-     * Generate cache key with version
-     */
-    protected function cacheKey(string $method, array $params = []): string
-    {
-        $model = class_basename($this->model);
-        $version = Cache::get("{$model}.cache_version", 1);
-        $paramString = $params ? '.' . md5(json_encode($params)) : '';
-        return "{$model}.v{$version}.{$method}{$paramString}";
     }
 
     /**
@@ -38,57 +31,106 @@ abstract class BaseRepository implements BaseInterface
     private function getter($request = null, $pagination = false)
     {
         $request = $request ?: request();
-        // Resolve current page properly for pagination
         $currentPage = $request?->page ?? Paginator::resolveCurrentPage() ?? 1;
 
         $params = [
-            'request'    => $request,
-            'pagination' => $pagination,
             'page'       => $currentPage,
             'perPage'    => $request?->perPage ?? null,
+            'search'     => $request?->search ?? null,
+            'sort_field' => $request?->sort_field ?? null,
+            'sort_type'  => $request?->sort_type ?? null,
+            'filters'    => $request?->filters ?? null,
+            'with'       => $request?->with ?? null,
+            'trash'      => $request?->trash ?? null,
+            'pagination' => $pagination,
         ];
 
-        $key = $this->cacheKey('getter', $params);
+        // If caching is disabled, always fetch fresh data
+        if (!$this->model->isCacheEnabled()) {
+            return $this->runQuery($request, $pagination);
+        }
 
-        return Cache::remember($key, $this->cacheTime * 60, function () use ($request, $pagination) {
-            $query = $this->model->newQuery();
+        // If search/filter is applied, generate param-specific cache
+        if (!empty($request?->search) || !empty($request?->filters)) {
+            $data = $this->runQuery($request, $pagination);
 
-            // Soft deletes
-            if ($request?->trash) {
-                if ($request->trash === 'with') $query->withTrashed();
-                elseif ($request->trash === 'only') $query->onlyTrashed();
-            }
-            // Eager load relationships
-            if ($request?->with && is_array($request->with)) {
-                $query->with($request->with);
-            }
+            // Clear only this search/filter cache if exists
+            $this->cacheManager->clear('search', $params);
 
-            // Search
-            if ($request?->search) $this->applySearch($query, $request);
+            // Cache the main dataset (getter) for default fetch
+            $this->cacheManager->put('getter', $this->runQuery(null, false));
 
-            // Sort
-            if ($request?->sort_field && $request?->sort_type) {
-                $query->orderBy($request->sort_field, $request->sort_type);
-            } else {
-                $query->orderBy('id', 'desc');
-            }
+            // Also cache this specific search result
+            $this->cacheManager->put('search', $data, $params);
 
-            // Filter
-            if ($request?->filters) $this->applyFilter($query, $request);
+            return $data;
+        }
 
-            // Pagination
-            return ($pagination || $request?->perPage)
-                ? $query->paginate($request->perPage ?? 15)
-                : $query->get();
-        });
+        // Default getter cache
+        return $this->cacheManager->remember(
+            'getter',
+            fn() => $this->runQuery($request, $pagination),
+            $params
+        );
+    }
+
+    /**
+     * Core query logic
+     */
+    private function runQuery($request, $pagination)
+    {
+        $query = $this->model->newQuery();
+
+        // Soft deletes
+        if ($request?->trash) {
+            if ($request->trash === 'with') $query->withTrashed();
+            elseif ($request->trash === 'only') $query->onlyTrashed();
+        }
+
+        // Eager load relationships
+        if ($request?->with && is_array($request->with)) {
+            $query->with($request->with);
+        }
+
+        // Search
+        if ($request?->search) $this->applySearch($query, $request);
+
+        // Sort
+        if ($request?->sort_field && $request?->sort_type) {
+            $query->orderBy($request->sort_field, $request->sort_type);
+        } else {
+            $query->orderBy('id', 'desc');
+        }
+
+        // Filter
+        if ($request?->filters) $this->applyFilter($query, $request);
+
+        // Pagination
+        return ($pagination || $request?->perPage)
+            ? $query->paginate($request->perPage ?? 15)
+            : $query->get();
     }
 
     protected function applySearch($query, $request)
     {
-        $columns = $request->column ? [$request->column] : ['name', 'description'];
-        $query->where(function ($q) use ($request, $columns) {
+        $columns = $request->columns ?? ['name'];
+        if (!is_array($columns)) $columns = [$columns];
+        $searchValue = $request->search;
+
+        if (empty($columns) || empty($searchValue)) return;
+
+        $query->where(function ($q) use ($columns, $searchValue) {
             foreach ($columns as $column) {
-                $q->orWhere($column, 'like', '%' . $request->search . '%');
+                if (str_contains($column, '.')) {
+                    [$relation, $relColumn] = explode('.', $column, 2);
+                    if (method_exists($q->getModel(), $relation)) {
+                        $q->orWhereHas($relation, fn($relQuery) => $relQuery->where($relColumn, 'like', "%$searchValue%"));
+                    } else {
+                        $q->orWhere($column, 'like', "%$searchValue%");
+                    }
+                } else {
+                    $q->orWhere($column, 'like', "%$searchValue%");
+                }
             }
         });
     }
@@ -101,43 +143,43 @@ abstract class BaseRepository implements BaseInterface
         }
     }
 
-    // --- PUBLIC METHODS ---
+    // -------------------------------
+    // Public CRUD and Fetch Methods
+    // -------------------------------
 
     public function all()
     {
-        $params = ['page' => 1]; // default page
-        return Cache::remember($this->cacheKey('all', $params), $this->cacheTime * 60, fn() => $this->getter());
+        return $this->getter();
     }
 
     public function paginate()
     {
-        $currentPage = Paginator::resolveCurrentPage() ?? 1;
-        $params = ['page' => $currentPage];
-        return Cache::remember($this->cacheKey('paginate', $params), $this->cacheTime * 60, fn() => $this->getter(null, true));
+        return $this->getter(null, true);
     }
 
-    public function find(int $id, $with = null, $trash = '')
+    public function find($id, $with = null, $trash = '')
     {
-        return Cache::remember($this->cacheKey('find', ['id' => $id, 'trash' => $trash]), $this->cacheTime * 60, function () use ($id, $trash) {
-            $query = $this->model->query();
-            if ($trash === 'with') $query->withTrashed();
-            elseif ($trash === 'only') $query->onlyTrashed();
-            // Eager load relationships
-            if (isset($with) && is_array($with)) {
-                $query->with($with);
-            }
-            return $query->findOrFail($id);
-        });
+        return $this->findBy('id', $id, $with, $trash);
     }
 
-    public function findByKey(string $key, $value, $trash = '')
+    public function findBy(string $key = 'id', $value, $with = null, $trash = '')
     {
-        return Cache::remember($this->cacheKey('findByKey', ['key' => $key, 'value' => $value, 'trash' => $trash]), $this->cacheTime * 60, function () use ($key, $value, $trash) {
-            $query = $this->model->where($key, $value);
-            if ($trash === 'with') $query->withTrashed();
-            elseif ($trash === 'only') $query->onlyTrashed();
-            return $query->first();
-        });
+        $params = ['key' => $key, 'value' => $value, 'with' => $with, 'trash' => $trash];
+
+        if (!$this->model->isCacheEnabled()) {
+            return $this->runFind($key, $value, $with, $trash);
+        }
+
+        return $this->cacheManager->remember('findBy', fn() => $this->runFind($key, $value, $with, $trash), $params);
+    }
+
+    private function runFind($key, $value, $with, $trash)
+    {
+        $query = $this->model->where($key, $value);
+        if ($trash === 'with') $query->withTrashed();
+        elseif ($trash === 'only') $query->onlyTrashed();
+        if (isset($with) && is_array($with)) $query->with($with);
+        return $query->first();
     }
 
     public function create(array $attributes)
@@ -171,8 +213,15 @@ abstract class BaseRepository implements BaseInterface
         return $record->forceDelete();
     }
 
-    public function searchOrfilter($request, $export = false)
+    public function searchOrFilter($request)
     {
-        return $this->getter($request, $export);
+        return $this->getter($request);
+    }
+
+    public function count($request = null)
+    {
+        $query = $this->model->newQuery();
+        if ($request?->filters) $this->applyFilter($query, $request);
+        return $query->count();
     }
 }

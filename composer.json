@@ -17,6 +17,7 @@
         "owen-it/laravel-auditing": "^13.7",
         "rap2hpoutre/laravel-log-viewer": "^2.4",
         "spatie/image": "^3.8",
+        "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-html": "^3.11",
         "spatie/laravel-permission": "^6.15",
         "wildside/userstamps": "^2.4"
@@ -40,6 +41,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
+            "app/Libraries/FileHelper.php",
             "app/Libraries/DropdownHelper.php",
             "app/Libraries/ResponseHelper.php",
             "app/Libraries/Helper.php"
