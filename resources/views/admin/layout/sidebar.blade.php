@@ -49,7 +49,7 @@
         </a>
     </li>
 @endcan --}}
-@canany(['countries-list', 'states-list', 'cities-list'])
+@canany(['countries-list', 'states-list', 'cities-list','accounts-list'])
     <li class="nav-item-header">
         <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Catalog Management</div>
         <i class="ph-dots-three sidebar-resize-show"></i>
@@ -87,15 +87,15 @@
         </a>
     </li>
 @endcan
-{{-- @can('sites-list')
+@can('accounts-list')
     <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('sites*') ? 'active' : '' }}" href="{{ route('sites.index') }}">
+        <a class="nav-link {{ request()->routeIs('accounts*') ? 'active' : '' }}" href="{{ route('accounts.index') }}">
             <i class="ph-map-pin"></i>
-            <span>Sites</span>
+            <span>Accounts</span>
         </a>
     </li>
 @endcan
-@can('floors-list')
+{{--  @can('floors-list')
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('floors*') ? 'active' : '' }}" href="{{ route('floors.index') }}">
             <i class="ph-map-pin"></i>

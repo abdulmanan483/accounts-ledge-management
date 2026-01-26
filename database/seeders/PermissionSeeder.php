@@ -31,21 +31,9 @@ class PermissionSeeder extends Seeder
                 'cities' => [
                     'cities-list', 'cities-view', 'cities-create', 'cities-edit', 'cities-delete',
                 ],
-                // 'sites' => [
-                //     'sites-list', 'sites-view', 'sites-create', 'sites-edit', 'sites-delete',
-                // ],
-                // 'floors' => [
-                //     'floors-list', 'floors-view', 'floors-create', 'floors-edit', 'floors-delete',
-                // ],
-                // 'blocks' => [
-                //     'blocks-list', 'blocks-view', 'blocks-create', 'blocks-edit', 'blocks-delete',
-                // ],
-                // 'departments' => [
-                //     'departments-list', 'departments-view', 'departments-create', 'departments-edit', 'departments-delete',
-                // ],
-                // 'locations' => [
-                //     'locations-list', 'locations-view', 'locations-create', 'locations-edit', 'locations-delete',
-                // ],
+                 'accounts' => [
+                     'accounts-list', 'accounts-view', 'accounts-create', 'accounts-edit', 'accounts-delete',
+                 ],
                 'roles' => [
                     'roles-list', 'roles-view', 'roles-create', 'roles-edit', 'roles-delete',
                 ],

@@ -1,26 +1,17 @@
 <?php
 
 use App\Http\Controllers\Admin\AuditController;
-use App\Http\Controllers\Admin\BlockController;
 use App\Http\Controllers\Admin\CountryController;
 use App\Http\Controllers\Admin\CityController;
-use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\DepartmentController;
-use App\Http\Controllers\Admin\FloorController;
-use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\NotificationController;
-use App\Http\Controllers\Admin\ProvinceController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SecureFileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\SiteController;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -64,6 +55,12 @@ Route::resource('states', StateController::class);
 |--------------------------------------------------------------------------
 */
 Route::resource('cities', CityController::class);
+/*
+|--------------------------------------------------------------------------
+| Accounts Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('accounts', \App\Http\Controllers\Admin\AccountController::class);
 
 /*
 |--------------------------------------------------------------------------

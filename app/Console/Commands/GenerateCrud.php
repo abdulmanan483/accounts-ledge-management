@@ -69,7 +69,7 @@ class GenerateCrud extends GeneratorCommand
             ->writeRoute();
         if ($this->option('repo')) {
             $this->buildInterface();
-            $this->php();
+            $this->buildRepository();
         }
         $this->info('Created Successfully.');
 

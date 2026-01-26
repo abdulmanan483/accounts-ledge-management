@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Interfaces\AccountInterface;
 use App\Interfaces\CityInterface;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\MediumInterface;
@@ -11,6 +12,7 @@ use App\Models\BaseModel;
 use App\Models\User;
 use App\Observers\BaseObserver;
 use App\Observers\UserObserver;
+use App\Repositories\AccountRepository;
 use App\Repositories\CityRepository;
 use App\Repositories\CountryRepository;
 use App\Repositories\MediumRepository;
@@ -31,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CityInterface::class,CityRepository::class);
         $this->app->bind(UserInterface::class,UserRepository::class);
         $this->app->bind(MediumInterface::class,MediumRepository::class);
+        // ALM
+        $this->app->bind(AccountInterface::class,AccountRepository::class);
     }
 
     /**
