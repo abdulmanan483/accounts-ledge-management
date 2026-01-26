@@ -20,34 +20,9 @@ class UserRepository extends BaseRepository implements UserInterface
     public function create(array $data): User
     {
         $user = $this->model->newInstance();
-        // File uploads
-        $file_paths = [
-            'profile_picture' => config('constants.profile_picture_path'),
-        ];
 
-        foreach ($file_paths as $field => $path) {
-            if (!empty($data[$field])) {
-                switch ($field) {
-                    case 'profile_picture':
-                        $type = MediaType::PROFILE_PICTURE;
-                        break;
-                    default:
-                        $type = MediaType::DEFAULT;
-                        break;
-                }
-                $media = $user->uploadMedia(
-                    $data[$field],
-                    $type,
-                    $path,
-                    'local',
-                    70
-                );
-
-                if ($media && isset($media->file_path)) {
-                    $data[$field] = $media->file_path;
-                }
-            }
-        }
+        // Handle file uploads
+        $data = $this->handleFileUploads($user, $data);
 
         // Create user
         $user->fill($data)->save();
@@ -59,41 +34,16 @@ class UserRepository extends BaseRepository implements UserInterface
 
         return $user;
     }
+
+    /**
+     * Update an existing user with optional file uploads and roles.
+     */
     public function update(int $id, array $data): User
     {
         $user = $this->find($id);
-        // File uploads
-        $file_paths = [
-            'profile_picture' => config('constants.profile_picture_path'),
-        ];
 
-        foreach ($file_paths as $field => $path) {
-            if (!empty($data[$field])) {
-                switch ($field) {
-                    case 'profile_picture':
-                        $type = MediaType::PROFILE_PICTURE;
-                        break;
-                    default:
-                        $type = MediaType::DEFAULT;
-                        break;
-                }
-
-                $media = $user->uploadMedia(
-                    $data[$field],
-                    $type,
-                    $path,
-                    'local',
-                    70
-                );
-
-                if ($media && isset($media->file_path)) {
-                    $data[$field] = $media->file_path;
-                }
-             } else {
-                // Prevent overwriting existing value with null
-                unset($data[$field]);
-            }
-        }
+        // Handle file uploads
+        $data = $this->handleFileUploads($user, $data);
 
         // Update user data
         $user->fill($data)->save();
@@ -105,6 +55,10 @@ class UserRepository extends BaseRepository implements UserInterface
 
         return $user;
     }
+
+    /**
+     * Check if an email is available (optionally ignoring a specific user ID).
+     */
     public function isEmailAvailable(string $email, ?int $ignoreId = null): bool
     {
         $query = $this->model->where('email', $email);
@@ -112,5 +66,43 @@ class UserRepository extends BaseRepository implements UserInterface
             $query->where('id', '!=', $ignoreId);
         }
         return !$query->exists();
+    }
+
+    /**
+     * Helper to handle file uploads for a user
+     */
+    private function handleFileUploads(User $user, array $data): array
+    {
+        // Map of fields to upload paths and media types
+        $fileFields = [
+            'profile_picture' => [
+                'path' => config('constants.profile_picture_path'),
+                'type' => MediaType::PROFILE_PICTURE
+            ],
+        ];
+
+        foreach ($fileFields as $field => $options) {
+            if (!empty($data[$field])) {
+                // Find existing media if available
+                $existingMedia = $user->media()->where('type', $options['type'])->first();
+
+                $media = $user->uploadMedia(
+                    $data[$field],
+                    $existingMedia,
+                    $options['type'],
+                    $options['path'],
+                    'local',
+                    70
+                );
+                if ($media && isset($media->file_path)) {
+                    $data[$field] = $media->file_path;
+                }
+            } else {
+                // Prevent overwriting existing value with null
+                unset($data[$field]);
+            }
+        }
+
+        return $data;
     }
 }

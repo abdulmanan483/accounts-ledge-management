@@ -73,7 +73,7 @@ function Dropify(element, options) {
     this.preview           = null;
     this.filenameWrapper   = null;
     this.settings          = $.extend(true, defaults, options, this.input.data());
-    this.imgFileExtensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp'];
+    this.imgFileExtensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp','webp'];
     this.errorsEvent       = $.Event('dropify.errors');
     this.isDisabled        = false;
     this.isInit            = false;

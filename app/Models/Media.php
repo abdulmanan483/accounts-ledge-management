@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Media\MediaType;
+use App\Traits\Uploadable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -29,6 +30,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Media extends BaseModel
 {
     use SoftDeletes;
+    use Uploadable;
     /**
      * The attributes that are mass assignable.
      *

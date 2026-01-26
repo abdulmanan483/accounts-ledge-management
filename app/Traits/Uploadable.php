@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\Generic\MediaType;
 use App\Models\Media;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
@@ -12,9 +13,9 @@ use Intervention\Image\ImageManager;
 trait Uploadable
 {
     // -----------------------------
-    // Upload file (existing)
+    // Private helper to upload file
     // -----------------------------
-    public function uploadFile(
+    private function uploadFile(
         UploadedFile|string $file,
         ?string $oldFilePath = null,
         string $disk = 'public',
@@ -23,12 +24,10 @@ trait Uploadable
         ?string $newFileName = null
     ): ?string {
         try {
-            // Delete old file
             if ($oldFilePath && Storage::disk($disk)->exists($oldFilePath)) {
                 Storage::disk($disk)->delete($oldFilePath);
             }
 
-            // Ensure directory exists
             $directory = rtrim($directory, '/');
             if (!Storage::disk($disk)->exists($directory)) {
                 Storage::disk($disk)->makeDirectory($directory, 0755, true);
@@ -55,11 +54,9 @@ trait Uploadable
 
             $isImage = str_starts_with($mimeType ?? '', 'image');
 
-            if ($isImage) {
-                $newFileName = ($newFileName ?? Str::uuid()) . '.webp';
-            } else {
-                $newFileName = ($newFileName ?? Str::uuid()) . '.' . $originalExtension;
-            }
+            $newFileName = $isImage
+                ? ($newFileName ?? Str::uuid()) . '.webp'
+                : ($newFileName ?? Str::uuid()) . '.' . $originalExtension;
 
             $filePath = $directory . '/' . $newFileName;
             $fullPath = Storage::disk($disk)->path($filePath);
@@ -67,7 +64,7 @@ trait Uploadable
             if ($file instanceof UploadedFile) {
                 if ($isImage) {
                     $manager = new ImageManager(new Driver());
-                    $manager->read($file->getRealPath())->toWebp()->save($fullPath);
+                    $manager->read($file->getRealPath())->toWebp($quality)->save($fullPath);
                     $mimeType = 'image/webp';
                 } else {
                     $file->storeAs($directory, $newFileName, $disk);
@@ -78,7 +75,6 @@ trait Uploadable
             }
 
             return $filePath;
-
         } catch (\Throwable $e) {
             \Log::error('File upload failed', ['error' => $e->getMessage()]);
             return null;
@@ -88,13 +84,6 @@ trait Uploadable
     // -----------------------------
     // Delete file helper
     // -----------------------------
-    /**
-     * Delete a file from storage
-     *
-     * @param string|null $filePath
-     * @param string $disk
-     * @return bool
-     */
     public function deleteFile(?string $filePath, string $disk = 'public'): bool
     {
         if (!$filePath) return false;
@@ -110,12 +99,79 @@ trait Uploadable
         }
     }
 
-
-    /**
-     * Polymorphic media relation
-     */
+    // -----------------------------
+    // Polymorphic media relation
+    // -----------------------------
     public function media()
     {
         return $this->morphMany(Media::class, 'mediable');
+    }
+
+    // -----------------------------
+    // Upload or update Media with type
+    // -----------------------------
+    /**
+     * @param UploadedFile|string $file
+     * @param Media|null $media
+     * @param int|null $type MediaType enum value
+     * @param string $directory
+     * @param string $disk
+     * @param int $quality
+     * @param string|null $newFileName
+     * @return Media|null
+     */
+    public function uploadMedia(
+        UploadedFile|string $file,
+        ?Media $media = null,
+        ?MediaType $type = null,
+        string $directory = 'uploads',
+        string $disk = 'public',
+        int $quality = 80,
+        ?string $newFileName = null
+    ): ?Media {
+        try {
+            $oldFilePath = $media?->file_path;
+
+            $filePath = $this->uploadFile($file, $oldFilePath, $disk, $directory, $quality, $newFileName);
+            if (!$filePath) return null;
+
+            $fullPath = Storage::disk($disk)->path($filePath);
+            $mimeType = mime_content_type($fullPath);
+            $fileSize = is_file($fullPath) ? filesize($fullPath) : 0;
+
+            $mediaData = [
+                'file_name'  => basename($filePath),
+                'file_path'  => $filePath,
+                'mime_type'  => $mimeType,
+                'file_size'  => $fileSize,
+                'type'       => $type,
+                'created_by' => auth()->id(),
+            ];
+
+            if ($media) {
+                $media->update($mediaData);
+                return $media;
+            }
+            return $this->media()->create($mediaData);
+
+        } catch (\Throwable $e) {
+            \Log::error('Upload Media failed', ['error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    // -----------------------------
+    // Delete Media record and file
+    // -----------------------------
+    public function deleteMedia(Media $media, string $disk = 'public'): bool
+    {
+        try {
+            $fileDeleted = $this->deleteFile($media->file_path, $disk);
+            $mediaDeleted = $media->delete();
+            return $fileDeleted && $mediaDeleted;
+        } catch (\Throwable $e) {
+            \Log::error('Delete Media failed', ['error' => $e->getMessage()]);
+            return false;
+        }
     }
 }
