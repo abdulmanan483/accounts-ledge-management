@@ -1,0 +1,109 @@
+<?php
+
+namespace {{controllerNamespace}};
+
+use App\Http\Controllers\Controller;
+use {{modelNamespace}}\{{modelName}};
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use {{requestNamespace}}\{{modelName}}Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+use App\Interfaces\{{modelName}}Interface;
+
+class {{modelName}}Controller extends Controller
+{
+    protected {{modelName}}Interface ${{modelNameLowerCase}};
+
+    /**
+     * Constructor.
+     *
+     * @param {{modelName}}Interface ${{modelNameLowerCase}}
+     */
+    function __construct({{modelName}}Interface ${{modelNameLowerCase}})
+    {
+        $this->{{modelNameLowerCase}} = ${{modelNameLowerCase}};
+
+        $this->middleware('permission:{{modelRoute}}-list',  ['only' => ['index']]);
+        $this->middleware('permission:{{modelRoute}}-view',  ['only' => ['show']]);
+        $this->middleware('permission:{{modelRoute}}-create',['only' => ['create','store']]);
+        $this->middleware('permission:{{modelRoute}}-edit',  ['only' => ['edit','update']]);
+        $this->middleware('permission:{{modelRoute}}-delete',['only' => ['destroy']]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request): View
+    {
+        $pagination_mode = $request->input('pagination_mode','client');
+        if($pagination_mode == 'client'){
+            ${{modelNamePluralSnakeLowerCase}} = $this->{{modelNameLowerCase}}->all();
+            return view('{{modelViewFolder}}.{{modelView}}.index', compact('{{modelNamePluralSnakeLowerCase}}'));
+        }
+        ${{modelNamePluralSnakeLowerCase}} = $this->{{modelNameLowerCase}}->paginate();
+
+        return view('{{modelViewFolder}}.{{modelView}}.index', compact('{{modelNamePluralSnakeLowerCase}}'))
+            ->with('i', ($request->input('page', 1) - 1) * ${{modelNamePluralSnakeLowerCase}}->perPage());
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(): View
+    {
+        ${{modelNameSingularSnakeLowerCase}} = new {{modelName}}();
+
+        return view('{{modelViewFolder}}.{{modelView}}.create', compact('{{modelNameSingularSnakeLowerCase}}'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store({{modelName}}Request $request): RedirectResponse
+    {
+        $this->{{modelNameLowerCase}}->create($request->validated());
+
+        return Redirect::route('{{modelRoute}}.index')
+            ->with('success', '{{modelName}} created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($id): View
+    {
+        ${{modelNameSingularSnakeLowerCase}} = $this->{{modelNameLowerCase}}->find($id);
+
+        return view('{{modelViewFolder}}.{{modelView}}.show', compact('{{modelNameSingularSnakeLowerCase}}'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit($id): View
+    {
+        ${{modelNameSingularSnakeLowerCase}} = $this->{{modelNameLowerCase}}->find($id);
+
+        return view('{{modelViewFolder}}.{{modelView}}.edit', compact('{{modelNameSingularSnakeLowerCase}}'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update({{modelName}}Request $request, {{modelName}} ${{modelNameSingularSnakeLowerCase}}): RedirectResponse
+    {
+        $this->{{modelNameLowerCase}}->update(${{modelNameSingularSnakeLowerCase}}, $request->validated());
+
+        return Redirect::route('{{modelRoute}}.index')
+            ->with('success', '{{modelName}} updated successfully');
+    }
+
+    public function destroy($id): RedirectResponse
+    {
+        $this->{{modelNameLowerCase}}->delete($id);
+
+        return Redirect::route('{{modelRoute}}.index')
+            ->with('success', '{{modelName}} deleted successfully');
+    }
+}
