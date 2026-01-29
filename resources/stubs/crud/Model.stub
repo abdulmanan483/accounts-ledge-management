@@ -12,10 +12,9 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
-class {{modelName}} extends Model implements Auditable
+class {{modelName}} extends BaseModel
 {
     {{softDeletes}}
-    use \OwenIt\Auditing\Auditable;
     protected $perPage = 20;
 
     /**

@@ -95,6 +95,22 @@
         </a>
     </li>
 @endcan
+@can('persons-list')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('persons*') ? 'active' : '' }}" href="{{ route('persons.index') }}">
+            <i class="ph-map-pin"></i>
+            <span>Persons</span>
+        </a>
+    </li>
+@endcan
+@can('transactions-list')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('transactions*') ? 'active' : '' }}" href="{{ route('transactions.index') }}">
+            <i class="ph-map-pin"></i>
+            <span>Transactions</span>
+        </a>
+    </li>
+@endcan
 {{--  @can('floors-list')
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('floors*') ? 'active' : '' }}" href="{{ route('floors.index') }}">

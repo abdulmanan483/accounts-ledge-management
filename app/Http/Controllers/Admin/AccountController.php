@@ -91,7 +91,7 @@ class AccountController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(AccountRequest $request, Account $account): RedirectResponse
+    public function update(AccountRequest $request, $account): RedirectResponse
     {
         $this->account->update($account, $request->validated());
 

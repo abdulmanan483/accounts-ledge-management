@@ -34,6 +34,12 @@ class PermissionSeeder extends Seeder
                  'accounts' => [
                      'accounts-list', 'accounts-view', 'accounts-create', 'accounts-edit', 'accounts-delete',
                  ],
+                'persons' => [
+                    'persons-list', 'persons-view', 'persons-create', 'persons-edit', 'persons-delete',
+                ],
+                'transactions' => [
+                    'transactions-list', 'transactions-view', 'transactions-create', 'transactions-edit', 'transactions-delete',
+                ],
                 'roles' => [
                     'roles-list', 'roles-view', 'roles-create', 'roles-edit', 'roles-delete',
                 ],
@@ -41,7 +47,7 @@ class PermissionSeeder extends Seeder
                     'permissions-list', 'permissions-view', 'permissions-create', 'permissions-edit', 'permissions-delete',
                 ],
                 'users' => [
-                    'users-list', 'users-view', 'users-create', 'users-edit', 'users-delete',
+                    'users-list', 'users-view', 'users-create', 'users-edit', 'users-delete'
                 ],
                 'notifications' => [
                     'notifications-list', 'notifications-view', 'notifications-create', 'notifications-edit', 'notifications-delete',

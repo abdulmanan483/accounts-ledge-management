@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // Meezan Bank, Cash, Office Expense
-            $table->enum('type', ['bank', 'cash', 'expense'])->index();
+//            $table->enum('type', ['bank', 'cash', 'expense'])->index();
             $table->decimal('opening_balance', 15, 2)->default(0);
             $table->decimal('current_balance', 15, 2)->default(0);
             $table->decimal('total_debit', 15, 2)->default(0);

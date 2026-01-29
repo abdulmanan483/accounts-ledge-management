@@ -6,31 +6,38 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AccountRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
-        return [
-			'name' => 'required|string',
-			'type' => 'required',
-			'opening_balance' => 'required',
-			'current_balance' => 'required',
-			'total_debit' => 'required',
-			'total_credit' => 'required',
-			'created_by' => 'nullable',
-			'updated_by' => 'nullable',
-			'deleted_by' => 'nullable',
+        $rules = [
+            'name'           => 'required|string|max:255',
+
+            'bank_name'      => 'nullable|string|max:255',
+            'account_title'  => 'nullable|string|max:255',
+            'account_number' => 'nullable|string|max:100',
+            'iban'           => 'nullable|string|max:50',
+            'branch_name'    => 'nullable|string|max:255',
+            'branch_code'    => 'nullable|string|max:50',
+            'swift_code'     => 'nullable|string|max:50',
         ];
+
+        /**
+         * Opening balance:
+         * - ONLY on create
+         * - numeric
+         * - negative allowed (overdraft / payable cases)
+         */
+        if ($this->isMethod('post')) {
+            $rules['opening_balance'] = 'required|numeric';
+        } else {
+            // prevent updating opening balance
+            $rules['opening_balance'] = 'prohibited';
+        }
+
+        return $rules;
     }
 }

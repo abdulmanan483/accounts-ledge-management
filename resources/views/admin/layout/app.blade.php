@@ -50,5 +50,6 @@
         <div class="offcanvas offcanvas-end" tabindex="-1" id="demo_config">
             @include('admin.layout.configuration')
         </div>
+        @include('admin.layout.scripts')
     </body>
 </html>

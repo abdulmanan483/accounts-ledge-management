@@ -6,17 +6,23 @@ use App\Interfaces\AccountInterface;
 use App\Interfaces\CityInterface;
 use App\Interfaces\CountryInterface;
 use App\Interfaces\MediumInterface;
+use App\Interfaces\PersonInterface;
 use App\Interfaces\StateInterface;
+use App\Interfaces\TransactionHeaderInterface;
+use App\Interfaces\TransactionLineInterface;
 use App\Interfaces\UserInterface;
-use App\Models\BaseModel;
+use App\Models\TransactionLine;
 use App\Models\User;
-use App\Observers\BaseObserver;
+use App\Observers\TransactionLineObserver;
 use App\Observers\UserObserver;
 use App\Repositories\AccountRepository;
 use App\Repositories\CityRepository;
 use App\Repositories\CountryRepository;
 use App\Repositories\MediumRepository;
+use App\Repositories\PersonRepository;
 use App\Repositories\StateRepository;
+use App\Repositories\TransactionHeaderRepository;
+use App\Repositories\TransactionLineRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\ServiceProvider;
@@ -35,6 +41,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(MediumInterface::class,MediumRepository::class);
         // ALM
         $this->app->bind(AccountInterface::class,AccountRepository::class);
+        $this->app->bind(PersonInterface::class,PersonRepository::class);
+        $this->app->bind(TransactionHeaderInterface::class,TransactionHeaderRepository::class);
+        $this->app->bind(TransactionLineInterface::class,TransactionLineRepository::class);
     }
 
     /**
@@ -44,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // BaseModel::observe(BaseObserver::class);
         User::observe(UserObserver::class);
+        TransactionLine::observe(TransactionLineObserver::class);
         Blueprint::macro('userTracking', function () {
             $this->unsignedBigInteger('created_by')->nullable();
             $this->unsignedBigInteger('updated_by')->nullable();

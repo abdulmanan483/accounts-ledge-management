@@ -44,37 +44,33 @@
                                     {{ $account->name }}
                                 </div>
                                 <div class="form-group mb-2 mb20">
-                                    <strong>Type:</strong>
-                                    {{ $account->type }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
                                     <strong>Opening Balance:</strong>
                                     {{ $account->opening_balance }}
                                 </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Current Balance:</strong>
-                                    {{ $account->current_balance }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Total Debit:</strong>
-                                    {{ $account->total_debit }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Total Credit:</strong>
-                                    {{ $account->total_credit }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Created By:</strong>
-                                    {{ $account->created_by }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Updated By:</strong>
-                                    {{ $account->updated_by }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Deleted By:</strong>
-                                    {{ $account->deleted_by }}
-                                </div>
+{{--                                <div class="form-group mb-2 mb20">--}}
+{{--                                    <strong>Current Balance:</strong>--}}
+{{--                                    {{ $account->current_balance }}--}}
+{{--                                </div>--}}
+{{--                                <div class="form-group mb-2 mb20">--}}
+{{--                                    <strong>Total Debit:</strong>--}}
+{{--                                    {{ $account->total_debit }}--}}
+{{--                                </div>--}}
+{{--                                <div class="form-group mb-2 mb20">--}}
+{{--                                    <strong>Total Credit:</strong>--}}
+{{--                                    {{ $account->total_credit }}--}}
+{{--                                </div>--}}
+{{--                                <div class="form-group mb-2 mb20">--}}
+{{--                                    <strong>Created By:</strong>--}}
+{{--                                    {{ $account->created_by }}--}}
+{{--                                </div>--}}
+{{--                                <div class="form-group mb-2 mb20">--}}
+{{--                                    <strong>Updated By:</strong>--}}
+{{--                                    {{ $account->updated_by }}--}}
+{{--                                </div>--}}
+{{--                                <div class="form-group mb-2 mb20">--}}
+{{--                                    <strong>Deleted By:</strong>--}}
+{{--                                    {{ $account->deleted_by }}--}}
+{{--                                </div>--}}
 
         </div>
     </div>

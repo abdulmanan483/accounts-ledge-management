@@ -1,18 +1,18 @@
 @extends('admin.layout.app')
 
-@section('title', 'Accounts')
+@section('title', 'Persons')
 
 @section('header')
     <div class="page-header-content d-lg-flex">
         <div class="d-flex">
             <h4 class="page-title mb-0">
-                Home - <span class="fw-normal">Account Management</span>
+                Home - <span class="fw-normal">Person Management</span>
             </h4>
         </div>
-        @can('accounts-create')
+        @can('persons-create')
             <div class="d-lg-block my-lg-auto ms-lg-auto">
                 <div class="d-sm-flex align-items-center mb-3 mb-lg-0 ms-lg-3">
-                    <a href="{{ route('accounts.create') }}"
+                    <a href="{{ route('persons.create') }}"
                        class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
                 <span class="btn-labeled-icon bg-primary text-white rounded-pill">
                     <i class="ph-plus"></i>
@@ -29,7 +29,7 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Accounts</h5>
+                <h5 class="mb-0">People</h5>
             </div>
             <div class="p-3 pb-0">
                 <form method="GET" class="mb-3">
@@ -50,7 +50,8 @@
                 <tr>
                     <th>No</th>
                     <th>Name</th>
-                    <th>Opening Balance</th>
+                    <th>Phone No</th>
+                    <th>Type</th>
                     <th>Total Debit</th>
                     <th>Total Credit</th>
                     <th>Current Balance</th>
@@ -58,21 +59,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($accounts as $key => $account)
+                @foreach ($persons as $key => $person)
                     <tr>
                         <td>{{ ++$key }}</td>
-                        <td>{{ $account->name }}</td>
-                        <td>{{ $account->opening_balance }}</td>
-                        <td>{{ $account->total_debit }}</td>
-                        <td>{{ $account->total_credit }}</td>
-                        <td>{{ $account->current_balance }}</td>
-                        <td class="text-center">@include('admin.account.actions')</td>
+                        <td>{{ $person->name }}</td>
+                        <td>{{ $person->phone_no }}</td>
+                        <td>{{ $person->type }}</td>
+                        <td>{{ $person->total_debit }}</td>
+                        <td>{{ $person->total_credit }}</td>
+                        <td>{{ $person->current_balance }}</td>
+                        <td class="text-center">@include('admin.person.actions')</td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
             @if(request('pagination_mode') === 'server')
-                {{ $accounts->appends(request()->query())->links('vendor.pagination.flat-rounded') }}
+                {{ $persons->appends(request()->query())->links('vendor.pagination.flat-rounded') }}
             @endif
         </div>
     </div>

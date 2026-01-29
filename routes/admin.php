@@ -61,6 +61,18 @@ Route::resource('cities', CityController::class);
 |--------------------------------------------------------------------------
 */
 Route::resource('accounts', \App\Http\Controllers\Admin\AccountController::class);
+/*
+|--------------------------------------------------------------------------
+| Persons Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('persons', \App\Http\Controllers\Admin\PersonController::class);
+/*
+|--------------------------------------------------------------------------
+| Transaction Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
 
 /*
 |--------------------------------------------------------------------------
