@@ -14,6 +14,7 @@ use App\Http\Requests\Admin\PersonRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Interfaces\PersonInterface;
+use App\Interfaces\TransactionCategoryInterface;
 
 class TransactionController extends Controller
 {
@@ -25,12 +26,12 @@ class TransactionController extends Controller
      *
      * @param TransactionHeaderInterface $transaction
      */
-    function __construct(TransactionHeaderInterface $transaction, PersonInterface $person,AccountInterface $account)
+    function __construct(TransactionHeaderInterface $transaction, PersonInterface $person,AccountInterface $account,TransactionCategoryInterface $transaction_category)
     {
         $this->transaction = $transaction;
         $this->person = $person;
         $this->account = $account;
-
+        $this->transaction_category = $transaction_category;
         $this->middleware('permission:transactions-list',  ['only' => ['index']]);
         $this->middleware('permission:transactions-view',  ['only' => ['show']]);
         $this->middleware('permission:transactions-create',['only' => ['create','store']]);
@@ -44,6 +45,7 @@ class TransactionController extends Controller
     public function index(Request $request): View
     {
         $pagination_mode = $request->input('pagination_mode','client');
+        $request->merge(['with' => 'account,person,transaction_category']);
         if($pagination_mode == 'client'){
             $transactions = $this->transaction->all();
             return view('admin.transaction.index', compact('transactions'));
@@ -61,9 +63,10 @@ class TransactionController extends Controller
     {
         $persons = $this->person->all();
         $accounts = $this->account->all();
+        $transaction_categories = $this->transaction_category->all();
         $transaction =  $this->transaction->new();
 
-        return view('admin.transaction.create', compact('transaction','persons','accounts'));
+        return view('admin.transaction.create', compact('transaction','persons','accounts','transaction_categories'));
     }
 
     /**

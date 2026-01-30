@@ -1,22 +1,22 @@
 @extends('admin.layout.app')
 
-@section('title', 'Accounts')
+@section('title', 'Transaction Categories')
 
 @section('header')
     <div class="page-header-content d-lg-flex">
         <div class="d-flex">
             <h4 class="page-title mb-0">
-                Home - <span class="fw-normal">Account Management</span>
+                Home - <span class="fw-normal">Transaction Category Management</span>
             </h4>
         </div>
-        @can('accounts-create')
+        @can('transaction-categories-create')
             <div class="d-lg-block my-lg-auto ms-lg-auto">
                 <div class="d-sm-flex align-items-center mb-3 mb-lg-0 ms-lg-3">
-                    <a href="{{ route('accounts.create') }}"
-                       class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
-                <span class="btn-labeled-icon bg-primary text-white rounded-pill">
-                    <i class="ph-plus"></i>
-                </span>
+                    <a href="{{ route('transaction-categories.create') }}"
+                        class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
+                        <span class="btn-labeled-icon bg-primary text-white rounded-pill">
+                            <i class="ph-plus"></i>
+                        </span>
                         Create
                     </a>
                 </div>
@@ -29,17 +29,17 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Accounts</h5>
+                <h5 class="mb-0">Transaction Categories</h5>
             </div>
             <div class="p-3 pb-0">
                 <form method="GET" class="mb-3">
                     <label for="pagination_mode">Pagination Mode:</label>
                     <select name="pagination_mode" id="pagination_mode" onchange="this.form.submit()"
-                            class="form-select w-auto d-inline-block ms-2">
-                        <option value="server" {{ request('pagination_mode') === 'server' ? 'selected' : '' }}>
-                            Server-side
+                        class="form-select w-auto d-inline-block ms-2">
+                        <option value="server" {{ request('pagination_mode') === 'server' ? 'selected' : '' }}>Server-side
                         </option>
-                        <option value="client" {{ request('pagination_mode') == '' || request('pagination_mode') === 'client' ? 'selected' : '' }}>
+                        <option value="client"
+                            {{ request('pagination_mode') == '' || request('pagination_mode') === 'client' ? 'selected' : '' }}>
                             Client-side
                         </option>
                     </select>
@@ -47,34 +47,26 @@
             </div>
             <table class="table datatable-basic">
                 <thead class="thead">
-                <tr>
-                    <th>No</th>
-                    <th>Name</th>
-                    <th>Currency</th>
-                    <th>Opening Balance</th>
-                    <th>Total Debit</th>
-                    <th>Total Credit</th>
-                    <th>Current Balance</th>
-                    <th class="text-center">Actions</th>
-                </tr>
+                    <tr>
+                        <th>No</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach ($accounts as $key => $account)
-                    <tr>
-                        <td>{{ ++$key }}</td>
-                        <td>{{ $account->name }}</td>
-                        <td>{{ $account->currency->name ?? 'N/A' }}({{ $account->currency->symbol ?? '' }})</td>
-                        <td>{{ $account->opening_balance }}</td>
-                        <td>{{ $account->total_debit }}</td>
-                        <td>{{ $account->total_credit }}</td>
-                        <td>{{ $account->current_balance }}</td>
-                        <td class="text-center">@include('admin.account.actions')</td>
-                    </tr>
-                @endforeach
+                    @foreach ($transaction_categories as $key => $transaction_category)
+                        <tr>
+                            <td>{{ ++$key }}</td>
+                            <td>{{ $transaction_category->name }}</td>
+                            <td>{{ $transaction_category->description }}</td>
+                            <td class="text-center">@include('admin.transaction-category.actions')</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
-            @if(request('pagination_mode') === 'server')
-                {{ $accounts->appends(request()->query())->links('vendor.pagination.flat-rounded') }}
+            @if (request('pagination_mode') === 'server')
+                {{ $transaction_categories->appends(request()->query())->links('vendor.pagination.flat-rounded') }}
             @endif
         </div>
     </div>
@@ -82,7 +74,7 @@
 
 @section('script')
     <script>
-        $(function () {
+        $(function() {
             const swalInit = swal.mixin({
                 buttonsStyling: false,
                 customClass: {
@@ -90,7 +82,7 @@
                     cancelButton: 'btn btn-light'
                 }
             });
-            $(".sa-confirm").click(function (event) {
+            $(".sa-confirm").click(function(event) {
                 event.preventDefault();
                 swalInit.fire({
                     title: 'Are you sure?',

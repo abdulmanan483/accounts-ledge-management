@@ -15,7 +15,7 @@ class AccountRequest extends FormRequest
     {
         $rules = [
             'name'           => 'required|string|max:255',
-
+            'currency_id'    => 'nullable|exists:currencies,id',
             'bank_name'      => 'nullable|string|max:255',
             'account_title'  => 'nullable|string|max:255',
             'account_number' => 'nullable|string|max:100',

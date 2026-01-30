@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\AccountRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Interfaces\AccountInterface;
+use App\Interfaces\CurrencyInterface;
 
 class AccountController extends Controller
 {
@@ -19,10 +20,12 @@ class AccountController extends Controller
      * Constructor.
      *
      * @param AccountInterface $account
+     * @param CurrencyInterface $currency
      */
-    function __construct(AccountInterface $account)
+    function __construct(AccountInterface $account,CurrencyInterface $currency)
     {
         $this->account = $account;
+        $this->currency = $currency;
 
         $this->middleware('permission:accounts-list',  ['only' => ['index']]);
         $this->middleware('permission:accounts-view',  ['only' => ['show']]);
@@ -37,6 +40,7 @@ class AccountController extends Controller
     public function index(Request $request): View
     {
         $pagination_mode = $request->input('pagination_mode','client');
+        $request->merge(['with' => 'currency']);
         if($pagination_mode == 'client'){
             $accounts = $this->account->all();
             return view('admin.account.index', compact('accounts'));
@@ -52,9 +56,10 @@ class AccountController extends Controller
      */
     public function create(): View
     {
-        $account = new Account();
+        $account = $this->account->new();
+        $currencies = $this->currency->all();
 
-        return view('admin.account.create', compact('account'));
+        return view('admin.account.create', compact('account','currencies'));
     }
 
     /**
@@ -84,8 +89,9 @@ class AccountController extends Controller
     public function edit($id): View
     {
         $account = $this->account->find($id);
+        $currencies = $this->currency->all();
 
-        return view('admin.account.edit', compact('account'));
+        return view('admin.account.edit', compact('account','currencies'));
     }
 
     /**

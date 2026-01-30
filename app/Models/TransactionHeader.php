@@ -12,6 +12,7 @@ class TransactionHeader extends BaseModel
 
     protected $fillable = [
         'txn_id',
+        'transaction_category_id',
         'account_id',
         'person_id',
         'txn_date',
@@ -50,6 +51,13 @@ class TransactionHeader extends BaseModel
     public function lines()
     {
         return $this->hasMany(TransactionLine::class, 'txn_header_id');
+    }
+    /**
+     * Header belongs to a Transaction Category
+     */
+    public function transaction_category()
+    {
+        return $this->belongsTo(TransactionCategory::class);
     }
 
     /**

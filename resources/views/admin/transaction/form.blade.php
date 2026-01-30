@@ -1,7 +1,7 @@
 <div class="row padding-1 p-1">
 
     {{-- Transaction Header --}}
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group mb-2 mb20">
             <label for="account_id" class="form-label">{{ __('Account') }}</label>
             <select name="account_id" id="account_id" class="form-control @error('account_id') is-invalid @enderror">
@@ -15,8 +15,22 @@
             {!! $errors->first('account_id', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
     </div>
+     <div class="col-md-4">
+        <div class="form-group mb-2 mb20">
+            <label for="transaction_category_id" class="form-label">{{ __('Transaction Category') }}</label>
+            <select name="transaction_category_id" id="transaction_category_id" class="form-control @error('transaction_category_id') is-invalid @enderror">
+                <option value="">{{ __('Select Transaction Category') }}</option>
+                @foreach($transaction_categories as $category)
+                    <option value="{{ $category->id }}" {{ old('transaction_category_id') == $category->id ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+            {!! $errors->first('transaction_category_id', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
+        </div>
+    </div>
 
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group mb-2 mb20">
             <label for="person_id" class="form-label">{{ __('Person') }}</label>
             <select name="person_id" id="person_id" class="form-control @error('person_id') is-invalid @enderror">
@@ -53,8 +67,8 @@
             <thead>
             <tr>
                 <th>{{ __('Description') }}</th>
-                <th>{{ __('Debit') }}</th>
-                <th>{{ __('Credit') }}</th>
+                <th>{{ __('Debit (Amount Out)') }}</th>
+                <th>{{ __('Credit (Amount In)') }}</th>
                 <th>{{ __('Action') }}</th>
             </tr>
             </thead>

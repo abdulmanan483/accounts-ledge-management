@@ -91,7 +91,7 @@ class CurrencyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CurrencyRequest $request, Currency $currency): RedirectResponse
+    public function update(CurrencyRequest $request, $currency): RedirectResponse
     {
         $this->currency->update($currency, $request->validated());
 

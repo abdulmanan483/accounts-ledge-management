@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SecureFileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StateController;
+use App\Http\Controllers\Admin\TransactionCategoryController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -73,6 +74,12 @@ Route::resource('accounts', \App\Http\Controllers\Admin\AccountController::class
 |--------------------------------------------------------------------------
 */
 Route::resource('persons', \App\Http\Controllers\Admin\PersonController::class);
+/*
+|--------------------------------------------------------------------------
+| Transaction Categories Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('transaction-categories', TransactionCategoryController::class);
 /*
 |--------------------------------------------------------------------------
 | Transaction Routes

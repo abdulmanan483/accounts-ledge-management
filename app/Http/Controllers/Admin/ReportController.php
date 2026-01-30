@@ -31,6 +31,7 @@ class ReportController extends Controller
      */
     public function showAccountsLedgerForm()
     {
+        request()->merge(input: ['with' => 'currency']);
         $accounts = $this->account->all();
 
         return view('admin.reports.accounts_ledger', [
@@ -51,7 +52,7 @@ class ReportController extends Controller
     public function accountsLedger(Request $request)
     {
         // Fetch accounts for dropdown
-        $accounts = $this->account->all();
+        $accounts = $this->account->searchOrFilter($request);
         $accountId = $request->input('account_id');
         $startDate = $request->input('from_date');
         $endDate   = $request->input('to_date');
@@ -83,7 +84,7 @@ class ReportController extends Controller
         $totalCredit = 0;
         $request->merge([
             'filters' => $filters,
-            'with' => 'lines'
+            'with' => 'lines',
         ]);
         $linesQuery = $this->transaction->searchOrFilter($request);
         // Flatten transactions and calculate running balance

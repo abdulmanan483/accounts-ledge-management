@@ -43,6 +43,9 @@ class PermissionSeeder extends Seeder
                 'transactions' => [
                     'transactions-list', 'transactions-view', 'transactions-create', 'transactions-edit', 'transactions-delete',
                 ],
+                'transaction-categories' => [
+                    'transaction-categories-list', 'transaction-categories-view', 'transaction-categories-create', 'transaction-categories-edit', 'transaction-categories-delete',
+                ],
                 'reports' => [
                     'accounts-ledger-report',
                 ],

@@ -50,6 +50,7 @@
                 <tr>
                     <th>No</th>
                     <th>Account</th>
+                    <th>TXN Category</th>
                     <th>Person</th>
                     <th>Reference No</th>
                     <th>Total Debit</th>
@@ -60,16 +61,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($transactions as $key => $person)
+                @foreach ($transactions as $key => $transaction)
                     <tr>
                         <td>{{ ++$key }}</td>
-                        <td>{{ $person->account?->name }}</td>
-                        <td>{{ $person->person?->name }}</td>
-                        <td>{{ $person->reference??'-' }}</td>
-                        <td>{{ $person->total_debit??'-' }}</td>
-                        <td>{{ $person->total_credit??'-' }}</td>
-                        <td>{{ $person->balance??'-' }}</td>
-                        <td>{{ $person->txn_date->format('M d, Y') }}</td>
+                        <td>{{ $transaction->account?->name }}</td>
+                        <td>{{ $transaction->transaction_category?->name }}</td>
+                        <td>{{ $transaction->person?->name??'-' }}</td>
+                        <td>{{ $transaction->reference??'-' }}</td>
+                        <td>{{ $transaction->total_debit??'-' }}</td>
+                        <td>{{ $transaction->total_credit??'-' }}</td>
+                        <td>{{ $transaction->balance??'-' }}</td>
+                        <td>{{ $transaction->txn_date->format('M d, Y') }}</td>
                         <td class="text-center">@include('admin.transaction.actions')</td>
                     </tr>
                 @endforeach

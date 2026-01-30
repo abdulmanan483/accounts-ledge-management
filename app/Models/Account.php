@@ -37,7 +37,9 @@ class Account extends BaseModel
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name',
+    protected $fillable = [
+        'name',
+        'currency_id',
         'bank_name',
         'account_title',
         'account_number',
@@ -56,5 +58,8 @@ class Account extends BaseModel
             'txn_header_id'
         );
     }
-
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class, 'currency_id');
+    }
 }

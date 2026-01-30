@@ -14,6 +14,22 @@
             @enderror
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="form-group mb-2">
+            <label class="form-label">Currency</label>
+            <select name="currency_id" class="form-control select2 @error('currency_id') is-invalid @enderror">
+                <option value="">Select Currency</option>
+                @foreach($currencies as $currency)
+                    <option value="{{ $currency->id }}" {{ old('currency_id', $account?->currency_id) == $currency->id ? 'selected' : '' }}>
+                        {{ $currency->name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('name')
+            <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
 
     {{-- Account Title --}}
     <div class="col-md-6">
@@ -147,3 +163,10 @@
     </div>
 
 </div>
+@push('scripts')
+    <script>
+        $(function() {
+            $('.select2').select2();
+        });
+    </script>
+@endpush

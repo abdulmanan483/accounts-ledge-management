@@ -24,6 +24,7 @@ class TransactionRequest extends FormRequest
         return [
             'reference' => 'nullable|string',
             'account_id' => 'required|exists:accounts,id',
+            'transaction_category_id' => 'nullable|exists:transaction_categories,id',
             'person_id' => 'nullable|exists:persons,id',
             'txn_date' => 'required|date',
             'lines' => 'required|array|min:1',
