@@ -34,7 +34,7 @@
         <div class="form-group mb-2 mb20">
             <label for="person_id" class="form-label">{{ __('Date') }}</label>
             <input type="date" name="txn_date" class="form-control @error('txn_date') is-invalid @enderror"
-                   value="{{ old('txn_date', $transaction?->txn_date) }}" id="txn_date" placeholder="TXN Date">
+                   value="{{ old('txn_date', $transaction?->txn_date?->format('Y-m-d') ?? now()->format('Y-m-d')) }}" id="txn_date" placeholder="TXN Date">
             {!! $errors->first('txn_date', '<div class="invalid-feedback" role="alert"><strong>:message</strong></div>') !!}
         </div>
     </div>

@@ -45,7 +45,7 @@ class TransactionLineObserver
             $header->updateQuietly([
                 'total_debit'  => $totalDebit,
                 'total_credit' => $totalCredit,
-                'balance'      => $totalDebit - $totalCredit,
+                'balance'      => $totalCredit - $totalDebit,
             ]);
 
             /** -------------------------
@@ -60,7 +60,7 @@ class TransactionLineObserver
                 $person->updateQuietly([
                     'total_debit'     => $pDebit,
                     'total_credit'    => $pCredit,
-                    'current_balance' => $pDebit - $pCredit,
+                    'current_balance' => $pCredit - $pDebit,
                 ]);
             }
 
@@ -76,7 +76,7 @@ class TransactionLineObserver
                 $account->updateQuietly([
                     'total_debit'     => $aDebit,
                     'total_credit'    => $aCredit,
-                    'current_balance' => $account->opening_balance + $aDebit - $aCredit,
+                    'current_balance' => ($account->opening_balance + $aCredit) - $aDebit,
                 ]);
             }
         });

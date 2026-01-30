@@ -10,4 +10,5 @@ enum PersonType: string
     case CUSTOMER = 'customer';
     case SUPPLIER = 'supplier';
     case EMPLOYEE = 'employee';
+    case OWNER = 'owner';
 }
