@@ -49,7 +49,7 @@
         </a>
     </li>
 @endcan --}}
-@canany(['countries-list', 'states-list', 'cities-list','accounts-list'])
+@canany(['countries-list', 'states-list', 'cities-list','currencies-list','accounts-list','persons-list','transactions-list'])
     <li class="nav-item-header">
         <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Catalog Management</div>
         <i class="ph-dots-three sidebar-resize-show"></i>
@@ -87,6 +87,14 @@
         </a>
     </li>
 @endcan
+@can('currencies-list')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('currencies*') ? 'active' : '' }}" href="{{ route('currencies.index') }}">
+            <i class="ph-map-pin"></i>
+            <span>Currencies</span>
+        </a>
+    </li>
+@endcan
 @can('accounts-list')
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('accounts*') ? 'active' : '' }}" href="{{ route('accounts.index') }}">
@@ -111,38 +119,20 @@
         </a>
     </li>
 @endcan
-{{--  @can('floors-list')
+@canany(['accounts-ledger-report'])
+    <li class="nav-item-header">
+        <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Reports</div>
+        <i class="ph-dots-three sidebar-resize-show"></i>
+    </li>
+@endcanany
+@can('accounts-ledger-report')
     <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('floors*') ? 'active' : '' }}" href="{{ route('floors.index') }}">
+        <a class="nav-link {{ request()->routeIs('reports.accounts-ledger*') ? 'active' : '' }}" href="{{ route('reports.accounts-ledger') }}">
             <i class="ph-map-pin"></i>
-            <span>Floors</span>
+            <span>Accounts Ledger</span>
         </a>
     </li>
 @endcan
-@can('blocks-list')
-    <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('blocks*') ? 'active' : '' }}" href="{{ route('blocks.index') }}">
-            <i class="ph-map-pin"></i>
-            <span>Blocks</span>
-        </a>
-    </li>
-@endcan
-@can('departments-list')
-    <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('departments*') ? 'active' : '' }}" href="{{ route('departments.index') }}">
-            <i class="ph-map-pin"></i>
-            <span>Departments</span>
-        </a>
-    </li>
-@endcan
-@can('locations-list')
-    <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('locations*') ? 'active' : '' }}" href="{{ route('locations.index') }}">
-            <i class="ph-map-pin"></i>
-            <span>Location</span>
-        </a>
-    </li>
-@endcan --}}
 @canany(['roles-list', 'permissions-list', 'users-list'])
     <li class="nav-item-header">
         <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Access Management</div>

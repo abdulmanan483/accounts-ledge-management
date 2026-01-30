@@ -57,6 +57,12 @@ Route::resource('states', StateController::class);
 Route::resource('cities', CityController::class);
 /*
 |--------------------------------------------------------------------------
+| Currencies Routes
+|--------------------------------------------------------------------------
+*/
+Route::resource('currencies', \App\Http\Controllers\Admin\CurrencyController::class);
+/*
+|--------------------------------------------------------------------------
 | Accounts Routes
 |--------------------------------------------------------------------------
 */
@@ -73,6 +79,13 @@ Route::resource('persons', \App\Http\Controllers\Admin\PersonController::class);
 |--------------------------------------------------------------------------
 */
 Route::resource('transactions', \App\Http\Controllers\Admin\TransactionController::class);
+/*
+|--------------------------------------------------------------------------
+| Reports Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('reports/accounts-ledger', [\App\Http\Controllers\Admin\ReportController::class, 'showAccountsLedgerForm'])->name('reports.accounts-ledger-form');
+Route::post('reports/accounts-ledger', [\App\Http\Controllers\Admin\ReportController::class, 'accountsLedger'])->name('reports.accounts-ledger');
 
 /*
 |--------------------------------------------------------------------------

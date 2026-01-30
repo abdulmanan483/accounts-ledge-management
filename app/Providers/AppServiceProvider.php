@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Interfaces\AccountInterface;
 use App\Interfaces\CityInterface;
 use App\Interfaces\CountryInterface;
+use App\Interfaces\CurrencyInterface;
 use App\Interfaces\MediumInterface;
 use App\Interfaces\PersonInterface;
 use App\Interfaces\StateInterface;
@@ -18,6 +19,7 @@ use App\Observers\UserObserver;
 use App\Repositories\AccountRepository;
 use App\Repositories\CityRepository;
 use App\Repositories\CountryRepository;
+use App\Repositories\CurrencyRepository;
 use App\Repositories\MediumRepository;
 use App\Repositories\PersonRepository;
 use App\Repositories\StateRepository;
@@ -44,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PersonInterface::class,PersonRepository::class);
         $this->app->bind(TransactionHeaderInterface::class,TransactionHeaderRepository::class);
         $this->app->bind(TransactionLineInterface::class,TransactionLineRepository::class);
+        $this->app->bind(CurrencyInterface::class,CurrencyRepository::class);
     }
 
     /**

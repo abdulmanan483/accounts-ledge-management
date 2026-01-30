@@ -137,9 +137,27 @@ abstract class BaseRepository implements BaseInterface
 
     protected function applyFilter($query, $request)
     {
-        foreach ($request->filters as $key => $value) {
-            if (is_array($value)) $query->whereBetween($key, $value);
-            else $query->where($key, $value);
+        foreach ((array)$request['filters'] as $column => $condition) {
+            if (!is_array($condition)) {
+                $query->where($column, $condition);
+                continue;
+            }
+
+            $operator = strtolower($condition['operator'] ?? '=');
+            $value = $condition['value'] ?? null;
+            switch ($operator) {
+                case '!=':
+                case '<>': $query->where($column, '!=', $value); break;
+                case 'like': $query->where($column, 'LIKE', '%' . $value . '%'); break;
+                case 'in': $query->whereIn($column, (array)$value); break;
+                case 'not_in': $query->whereNotIn($column, (array)$value); break;
+                case 'between':
+                    if (is_array($value) && count($value) === 2) $query->whereBetween($column, $value);
+                    break;
+                case 'null': $query->whereNull($column); break;
+                case 'not_null': $query->whereNotNull($column); break;
+                default: $query->where($column, $operator, $value);
+            }
         }
     }
 

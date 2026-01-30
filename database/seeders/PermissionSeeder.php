@@ -31,6 +31,9 @@ class PermissionSeeder extends Seeder
                 'cities' => [
                     'cities-list', 'cities-view', 'cities-create', 'cities-edit', 'cities-delete',
                 ],
+                'currencies' => [
+                    'currencies-list', 'currencies-view', 'currencies-create', 'currencies-edit', 'currencies-delete',
+                ],
                  'accounts' => [
                      'accounts-list', 'accounts-view', 'accounts-create', 'accounts-edit', 'accounts-delete',
                  ],
@@ -39,6 +42,9 @@ class PermissionSeeder extends Seeder
                 ],
                 'transactions' => [
                     'transactions-list', 'transactions-view', 'transactions-create', 'transactions-edit', 'transactions-delete',
+                ],
+                'reports' => [
+                    'accounts-ledger-report',
                 ],
                 'roles' => [
                     'roles-list', 'roles-view', 'roles-create', 'roles-edit', 'roles-delete',
