@@ -8,7 +8,7 @@
             <select name="account_id" id="account_id" class="form-control @error('account_id') is-invalid @enderror">
                 <option value="">{{ __('Select Account') }}</option>
                 @foreach ($accounts as $account)
-                    <option value="{{ $account->id }}" data-currency-id="{{ $account->currency_id }}" data-currency="{{ $account->currency->symbol ?? '' }}"
+                    <option value="{{ $account->id }}" data-currency-id="{{ $account->currency_id }}" data-currency="{{ $account->currency->symbol_native ?? '' }}"
                         {{ old('account_id') == $account->id ? 'selected' : '' }}>
                         {{ $account->name }}
                     </option>
