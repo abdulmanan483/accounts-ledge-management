@@ -89,7 +89,7 @@ class ReportController extends Controller
         $totalCredit = 0;
         $request->merge([
             'filters' => $filters,
-            'with' => ['lines', 'currency'],
+            'with' => ['lines', 'currency','account','person','transaction_category'],
             'sort_by' => 'txn_date',
             'sort_order' => 'asc',
         ]);
@@ -103,6 +103,8 @@ class ReportController extends Controller
                     'debit'       => (float) $l->debit,
                     'credit'      => (float) $l->credit,
                     'currency'    => $h->currency,
+                    'transaction_category' => $h->transaction_category,
+                    'person' => $h->person,
                 ])
             )
             ->sortBy('txn_date')

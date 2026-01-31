@@ -9,7 +9,7 @@
                 <option value="">{{ __('Select Account') }}</option>
                 @foreach ($accounts as $account)
                     <option value="{{ $account->id }}" data-currency-id="{{ $account->currency_id }}" data-currency="{{ $account->currency->symbol_native ?? '' }}"
-                        {{ old('account_id') == $account->id ? 'selected' : '' }}>
+                        {{ old('account_id',$transaction?->account_id) == $account->id ? 'selected' : '' }}>
                         {{ $account->name }}
                     </option>
                 @endforeach
@@ -25,7 +25,7 @@
                 <option value="">{{ __('Select Transaction Category') }}</option>
                 @foreach ($transaction_categories as $category)
                     <option value="{{ $category->id }}"
-                        {{ old('transaction_category_id') == $category->id ? 'selected' : '' }}>
+                        {{ old('transaction_category_id',$transaction?->transaction_category_id) == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}
                     </option>
                 @endforeach
@@ -43,7 +43,7 @@
             <select name="person_id" id="person_id" class="form-control @error('person_id') is-invalid @enderror">
                 <option value="">{{ __('Select Person') }}</option>
                 @foreach ($persons as $person)
-                    <option value="{{ $person->id }}" {{ old('person_id') == $person->id ? 'selected' : '' }}>
+                    <option value="{{ $person->id }}" {{ old('person_id',$transaction?->person_id) == $person->id ? 'selected' : '' }}>
                         {{ $person->name }} ({{ $person->type }})
                     </option>
                 @endforeach
@@ -81,8 +81,8 @@
                 </tr>
             </thead>
             <tbody>
-                @if (old('lines'))
-                    @foreach (old('lines') as $i => $line)
+                @if (old('lines',$transaction?->lines->toArray() ?? false))
+                    @foreach (old('lines',$transaction?->lines->toArray() ?? []) as $i => $line)
                         <tr>
                             <td>
                                 <input type="text" name="lines[{{ $i }}][description]"
@@ -90,11 +90,11 @@
                             </td>
                             <td>
                                 <input type="number" step="0.01" name="lines[{{ $i }}][debit]"
-                                    class="form-control" value="{{ $line['debit'] ?? '0.00' }}">
+                                    class="form-control debit" value="{{ $line['debit'] ?? '0.00' }}">
                             </td>
                             <td>
                                 <input type="number" step="0.01" name="lines[{{ $i }}][credit]"
-                                    class="form-control" value="{{ $line['credit'] ?? '0.00' }}">
+                                    class="form-control credit" value="{{ $line['credit'] ?? '0.00' }}">
                             </td>
                             <td>
                                 <button type="button" class="btn btn-danger remove-line">{{ __('Remove') }}</button>

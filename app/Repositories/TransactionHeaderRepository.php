@@ -47,6 +47,41 @@ class TransactionHeaderRepository extends BaseRepository implements TransactionH
             return $header;
         });
     }
+    public function update(int $id, array $data): TransactionHeader
+    {
+        return DB::transaction(function () use ($id, $data) {
+
+            /** @var TransactionHeader $header */
+            $header = $this->model->findOrFail($id);
+
+            // 1️⃣ Update header fields
+            $header->update([
+                'account_id' => $data['account_id'],
+                'currency_id' => $data['currency_id'],
+                'transaction_category_id' => $data['transaction_category_id'],
+                'reference' => $data['reference'],
+                'person_id' => $data['person_id'] ?? null,
+                'txn_date' => $data['txn_date'],
+                // txn_id intentionally NOT updated
+            ]);
+
+            // 2️⃣ Delete old lines (soft delete)
+            $header->lines()->delete();
+
+            // 3️⃣ Recreate lines
+            if (!empty($data['lines'])) {
+                foreach ($data['lines'] as $line) {
+                    $header->lines()->create([
+                        'description' => $line['description'] ?? null,
+                        'debit'  => max(0, (float) ($line['debit'] ?? 0)),
+                        'credit' => max(0, (float) ($line['credit'] ?? 0)),
+                    ]);
+                }
+            }
+
+            return $header->fresh(['lines']);
+        });
+    }
     public static function generateTxnId($txnDate = null)
     {
         $date = $txnDate ? \Carbon\Carbon::parse($txnDate) : now();

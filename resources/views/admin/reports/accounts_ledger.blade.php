@@ -63,6 +63,8 @@
                         <th>#</th>
                         <th>Date</th>
                         <th>Description</th>
+                        <th>TXN Category</th>
+                        <th>Person</th>
                         <th>Debit</th>
                         <th>Credit</th>
                         <th>Running Balance</th>
@@ -74,6 +76,8 @@
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $txn->txn_date->format('d-m-Y') }}</td>
                             <td>{{ $txn->description }}</td>
+                            <td>{{ $txn->transaction_category?->name ?? '-' }}</td>
+                            <td>{{ $txn->person?->name?$txn->person?->name.' ('. $txn->person?->type.')' : '-' }}</td>
                             <td>{{ $txn->debit > 0 ? ($txn->currency->symbol_native ?? '').' '. number_format($txn->debit,2) : '' }}</td>
                             <td>{{ $txn->credit > 0 ? ($txn->currency->symbol_native ?? '').' '. number_format($txn->credit,2) : '' }}</td>
                             <td>{{ $txn->currency->symbol_native ?? '' }} {{ number_format($txn->running_balance,2) }}</td>
@@ -82,7 +86,7 @@
                     </tbody>
                     <tfoot>
                         <tr class="fw-bold">
-                            <td colspan="3">Totals</td>
+                            <td colspan="5">Totals</td>
                             <td>{{ $transactions[0]->currency->symbol_native ?? '' }} {{ number_format($totalDebit,2) }}</td>
                             <td>{{ $transactions[0]->currency->symbol_native ?? '' }} {{ number_format($totalCredit,2) }}</td>
                             <td>{{ $transactions[0]->currency->symbol_native ?? '' }} {{ number_format($finalBalance,2) }}</td>

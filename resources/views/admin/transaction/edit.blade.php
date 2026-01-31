@@ -6,18 +6,18 @@
 <div class="page-header-content d-lg-flex">
     <div class="d-flex">
         <h4 class="page-title mb-0">
-            Home - <span class="fw-normal">Person Management</span>
+            Home - <span class="fw-normal">Transaction Management</span>
         </h4>
     </div>
     <div class="d-lg-block my-lg-auto ms-lg-auto">
         <div class="d-sm-flex align-items-center mb-3 mb-lg-0 ms-lg-3 gap-2">
-            <a href="{{ route('persons.index') }}" class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
+            <a href="{{ route('transactions.index') }}" class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
                 <span class="btn-labeled-icon bg-primary text-white rounded-pill">
                     <i class="ph-arrow-circle-left"></i>
                 </span>
                 Back
             </a>
-             <a href="{{ route('persons.create') }}" class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
+             <a href="{{ route('transactions.create') }}" class="btn btn-outline-primary btn-labeled btn-labeled-start rounded-pill">
                 <span class="btn-labeled-icon bg-primary text-white rounded-pill">
                     <i class="ph-plus"></i>
                 </span>
@@ -32,13 +32,13 @@
 <div class="col-md-12">
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">{{__('Update')}} Person</h5>
+            <h5 class="mb-0">{{__('Update')}} Transaction</h5>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('persons.update', $person->id) }}" class="validate" role="form" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('transactions.update', $transaction->id) }}" class="validate" role="form" enctype="multipart/form-data">
                 {{ method_field('PATCH') }}
                 @csrf
-                @include('admin.person.form')
+                @include('admin.transaction.form')
             </form>
         </div>
     </div>

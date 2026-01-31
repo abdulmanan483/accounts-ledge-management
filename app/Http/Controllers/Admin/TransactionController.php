@@ -97,14 +97,19 @@ class TransactionController extends Controller
     public function edit($id): View
     {
         $transaction = $this->transaction->find($id);
+        $persons = $this->person->all();
+        $transaction_categories = $this->transaction_category->all();
+        request()->merge(['with' => ['currency']]);
+        $accounts = $this->account->all();
 
-        return view('admin.transaction.edit', compact('transaction'));
+
+        return view('admin.transaction.edit', compact('transaction','persons','accounts','transaction_categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update($request, $transaction): RedirectResponse
+    public function update(TransactionRequest $request, $transaction): RedirectResponse
     {
         $this->transaction->update($transaction, $request->validated());
 
