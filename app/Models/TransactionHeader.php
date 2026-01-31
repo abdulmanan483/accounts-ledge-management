@@ -14,6 +14,7 @@ class TransactionHeader extends BaseModel
         'txn_id',
         'transaction_category_id',
         'account_id',
+        'currency_id',
         'person_id',
         'txn_date',
         'reference',
@@ -35,6 +36,13 @@ class TransactionHeader extends BaseModel
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+    /**
+     * Header belongs to a Currency
+     */
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
     }
 
     /**

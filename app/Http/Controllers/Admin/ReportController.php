@@ -31,7 +31,7 @@ class ReportController extends Controller
      */
     public function showAccountsLedgerForm()
     {
-        request()->merge(input: ['with' => 'currency']);
+        request()->merge(input: ['with' => ['currency']]);
         $accounts = $this->account->all();
 
         return view('admin.reports.accounts_ledger', [
@@ -52,6 +52,7 @@ class ReportController extends Controller
     public function accountsLedger(Request $request)
     {
         // Fetch accounts for dropdown
+        $request->merge(['with' => ['currency']]);
         $accounts = $this->account->searchOrFilter($request);
         $accountId = $request->input('account_id');
         $startDate = $request->input('from_date');
@@ -76,33 +77,47 @@ class ReportController extends Controller
                 'value'    => $endDate,
             ];
         }
-
-
+        if($startDate && $endDate) {
+            $filters['txn_date'] = [
+                'operator' => 'between',
+                'value'    => [$startDate, $endDate],
+            ];
+        }
         $transactions = [];
         $runningBalance = 0;
         $totalDebit = 0;
         $totalCredit = 0;
         $request->merge([
             'filters' => $filters,
-            'with' => 'lines',
+            'with' => ['lines', 'currency'],
+            'sort_by' => 'txn_date',
+            'sort_order' => 'asc',
         ]);
         $linesQuery = $this->transaction->searchOrFilter($request);
-        // Flatten transactions and calculate running balance
-        foreach ($linesQuery as $header) {
-            foreach ($header->lines as $line) {
-                $runningBalance += $line->credit - $line->debit;
-                $totalDebit += $line->debit;
-                $totalCredit += $line->credit;
+        $transactions = collect($linesQuery)
+            ->flatMap(
+                fn($h) =>
+                $h->lines->map(fn($l) => (object)[
+                    'txn_date'    => $h->txn_date,
+                    'description' => $l->description,
+                    'debit'       => (float) $l->debit,
+                    'credit'      => (float) $l->credit,
+                    'currency'    => $h->currency,
+                ])
+            )
+            ->sortBy('txn_date')
+            ->values();
 
-                $transactions[] = (object)[
-                    'txn_date' => $header->txn_date,
-                    'description' => $line->description,
-                    'debit' => $line->debit,
-                    'credit' => $line->credit,
-                    'running_balance' => $runningBalance,
-                ];
-            }
-        }
+        $runningBalance = $totalDebit = $totalCredit = 0;
+
+        $transactions->each(function ($t) use (&$runningBalance, &$totalDebit, &$totalCredit) {
+            $runningBalance += $t->credit - $t->debit;
+            $t->running_balance = $runningBalance;
+
+            $totalDebit  += $t->debit;
+            $totalCredit += $t->credit;
+        });
+
 
         return view('admin.reports.accounts_ledger', [
             'accounts' => $accounts,

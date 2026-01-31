@@ -25,6 +25,7 @@ class TransactionHeaderRepository extends BaseRepository implements TransactionH
             // 1️⃣ Create the Transaction Header
             $header = $this->model->create([
                 'account_id' => $data['account_id'],
+                'currency_id' => $data['currency_id'],
                 'transaction_category_id' => $data['transaction_category_id'],
                 'reference' => $data['reference'],
                 'person_id' => $data['person_id'] ?? null,

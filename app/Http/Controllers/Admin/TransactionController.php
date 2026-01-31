@@ -62,9 +62,10 @@ class TransactionController extends Controller
     public function create(): View
     {
         $persons = $this->person->all();
-        $accounts = $this->account->all();
         $transaction_categories = $this->transaction_category->all();
         $transaction =  $this->transaction->new();
+        request()->merge(['with' => ['currency']]);
+        $accounts = $this->account->all();
 
         return view('admin.transaction.create', compact('transaction','persons','accounts','transaction_categories'));
     }

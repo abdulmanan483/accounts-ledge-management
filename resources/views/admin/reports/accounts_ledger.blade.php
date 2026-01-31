@@ -74,18 +74,18 @@
                             <td>{{ $key + 1 }}</td>
                             <td>{{ $txn->txn_date->format('d-m-Y') }}</td>
                             <td>{{ $txn->description }}</td>
-                            <td>{{ $txn->debit > 0 ? number_format($txn->debit,2) : '' }}</td>
-                            <td>{{ $txn->credit > 0 ? number_format($txn->credit,2) : '' }}</td>
-                            <td>{{ number_format($txn->running_balance,2) }}</td>
+                            <td>{{ $txn->debit > 0 ? ($txn->currency->symbol ?? '').' '. number_format($txn->debit,2) : '' }}</td>
+                            <td>{{ $txn->credit > 0 ? ($txn->currency->symbol ?? '').' '. number_format($txn->credit,2) : '' }}</td>
+                            <td>{{ $txn->currency->symbol ?? '' }} {{ number_format($txn->running_balance,2) }}</td>
                         </tr>
                     @endforeach
                     </tbody>
                     <tfoot>
                         <tr class="fw-bold">
                             <td colspan="3">Totals</td>
-                            <td>{{ number_format($totalDebit,2) }}</td>
-                            <td>{{ number_format($totalCredit,2) }}</td>
-                            <td>{{ number_format($finalBalance,2) }}</td>
+                            <td>{{ $transactions[0]->currency->symbol ?? '' }} {{ number_format($totalDebit,2) }}</td>
+                            <td>{{ $transactions[0]->currency->symbol ?? '' }} {{ number_format($totalCredit,2) }}</td>
+                            <td>{{ $transactions[0]->currency->symbol ?? '' }} {{ number_format($finalBalance,2) }}</td>
                         </tr>
                     </tfoot>
                 </table>
