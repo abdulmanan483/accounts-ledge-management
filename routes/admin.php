@@ -91,8 +91,10 @@ Route::resource('transactions', \App\Http\Controllers\Admin\TransactionControlle
 | Reports Routes
 |--------------------------------------------------------------------------
 */
-Route::get('reports/accounts-ledger', [\App\Http\Controllers\Admin\ReportController::class, 'showAccountsLedgerForm'])->name('reports.accounts-ledger-form');
-Route::post('reports/accounts-ledger', [\App\Http\Controllers\Admin\ReportController::class, 'accountsLedger'])->name('reports.accounts-ledger');
+Route::get('reports/accounts-ledger', [\App\Http\Controllers\Admin\ReportController::class, 'accountsLedger'])->name('reports.accounts-ledger');
+// Route::post('reports/accounts-ledger', [\App\Http\Controllers\Admin\ReportController::class, 'accountsLedger'])->name('reports.accounts-ledger');
+Route::get('reports/income-vs-expense', [\App\Http\Controllers\Admin\ReportController::class, 'incomeVsExpenseLedger'])->name('reports.income-vs-expense');
+Route::get('reports/profit-vs-loss', [\App\Http\Controllers\Admin\ReportController::class, 'profitVsLossLedger'])->name('reports.profit-vs-loss');
 
 /*
 |--------------------------------------------------------------------------

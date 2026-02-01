@@ -47,7 +47,7 @@ class PermissionSeeder extends Seeder
                     'transaction-categories-list', 'transaction-categories-view', 'transaction-categories-create', 'transaction-categories-edit', 'transaction-categories-delete',
                 ],
                 'reports' => [
-                    'accounts-ledger-report',
+                    'accounts-ledger-report', 'income-vs-expense-report','profit-vs-loss-report',
                 ],
                 'roles' => [
                     'roles-list', 'roles-view', 'roles-create', 'roles-edit', 'roles-delete',

@@ -141,6 +141,22 @@
         </a>
     </li>
 @endcan
+@can('income-vs-expense-report')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('reports.income-vs-expense*') ? 'active' : '' }}" href="{{ route('reports.income-vs-expense') }}">
+            <i class="ph-map-pin"></i>
+            <span>Income vs Expense</span>
+        </a>
+    </li>
+@endcan
+@can('profit-vs-loss-report')
+    <li class="nav-item">
+        <a class="nav-link {{ request()->routeIs('reports.profit-vs-loss*') ? 'active' : '' }}" href="{{ route('reports.profit-vs-loss') }}">
+            <i class="ph-map-pin"></i>
+            <span>Profit vs Loss</span>
+        </a>
+    </li>
+@endcan
 @canany(['roles-list', 'permissions-list', 'users-list'])
     <li class="nav-item-header">
         <div class="text-uppercase fs-sm lh-sm opacity-50 sidebar-resize-hide">Access Management</div>

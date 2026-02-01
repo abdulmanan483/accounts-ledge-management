@@ -22,7 +22,7 @@
             {{-- Filter Form --}}
             <div class="p-3 pb-0">
                 {{--                <form method="GET" class="row g-2">--}}
-                <form action="{{ route('reports.accounts-ledger') }}" method="POST" class="row">
+                <form action="{{ route('reports.accounts-ledger') }}" class="row">
                     @csrf
                     <div class="col-md-4">
                         <label for="account_id" class="form-label">Select Account</label>
@@ -62,6 +62,7 @@
                     <tr>
                         <th>#</th>
                         <th>Date</th>
+                        <th>TXN ID</th>
                         <th>Description</th>
                         <th>TXN Category</th>
                         <th>Person</th>
@@ -74,6 +75,7 @@
                     @foreach($transactions as $key => $txn)
                         <tr>
                             <td>{{ $key + 1 }}</td>
+                            <td>{{ $txn->txn_id }}</td>
                             <td>{{ $txn->txn_date->format('d-m-Y') }}</td>
                             <td>{{ $txn->description }}</td>
                             <td>{{ $txn->transaction_category?->name ?? '-' }}</td>
@@ -86,7 +88,7 @@
                     </tbody>
                     <tfoot>
                         <tr class="fw-bold">
-                            <td colspan="5">Totals</td>
+                            <td colspan="6">Totals</td>
                             <td>{{ $transactions[0]->currency->symbol_native ?? '' }} {{ number_format($totalDebit,2) }}</td>
                             <td>{{ $transactions[0]->currency->symbol_native ?? '' }} {{ number_format($totalCredit,2) }}</td>
                             <td>{{ $transactions[0]->currency->symbol_native ?? '' }} {{ number_format($finalBalance,2) }}</td>
