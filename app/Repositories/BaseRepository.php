@@ -147,16 +147,29 @@ abstract class BaseRepository implements BaseInterface
             $value = $condition['value'] ?? null;
             switch ($operator) {
                 case '!=':
-                case '<>': $query->where($column, '!=', $value); break;
-                case 'like': $query->where($column, 'LIKE', '%' . $value . '%'); break;
-                case 'in': $query->whereIn($column, (array)$value); break;
-                case 'not_in': $query->whereNotIn($column, (array)$value); break;
+                case '<>':
+                    $query->where($column, '!=', $value);
+                    break;
+                case 'like':
+                    $query->where($column, 'LIKE', '%' . $value . '%');
+                    break;
+                case 'in':
+                    $query->whereIn($column, (array)$value);
+                    break;
+                case 'not_in':
+                    $query->whereNotIn($column, (array)$value);
+                    break;
                 case 'between':
                     if (is_array($value) && count($value) === 2) $query->whereBetween($column, $value);
                     break;
-                case 'null': $query->whereNull($column); break;
-                case 'not_null': $query->whereNotNull($column); break;
-                default: $query->where($column, $operator, $value);
+                case 'null':
+                    $query->whereNull($column);
+                    break;
+                case 'not_null':
+                    $query->whereNotNull($column);
+                    break;
+                default:
+                    $query->where($column, $operator, $value);
             }
         }
     }
@@ -205,9 +218,11 @@ abstract class BaseRepository implements BaseInterface
         return $this->model->create($attributes);
     }
 
-    public function update(int $id, array $attributes)
+    public function update(Model|int $model, array $attributes)
     {
-        $record = $this->find($id);
+        $record = $model instanceof Model
+            ? $model
+            : $this->find($model);
         $record->update($attributes);
         return $record;
     }

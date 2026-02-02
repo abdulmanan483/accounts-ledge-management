@@ -51,7 +51,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (${{modelNamePluralSnakeLowerCase}} as $key => ${{modelNameLowerCase}})
+                @foreach (${{modelNamePluralSnakeLowerCase}} as $key => ${{modelNameSingularSnakeLowerCase}})
                     <tr>
                         <td>{{ ++$key }}</td>
                         {{tableBody}}

@@ -52,7 +52,7 @@ class {{modelName}}Controller extends Controller
      */
     public function create(): View
     {
-        ${{modelNameSingularSnakeLowerCase}} = new {{modelName}}();
+        ${{modelNameSingularSnakeLowerCase}} = $this->{{modelNameLowerCase}}->new();
 
         return view('{{modelViewFolder}}.{{modelView}}.create', compact('{{modelNameSingularSnakeLowerCase}}'));
     }

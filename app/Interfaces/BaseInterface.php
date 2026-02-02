@@ -21,7 +21,7 @@ interface BaseInterface
      * @param array $attributes
      * @return mixed
      */
-    public function update(int $id, array $attributes);
+    public function update(Model|int $model, array $attributes);
 
     /**
      * Delete a record.
